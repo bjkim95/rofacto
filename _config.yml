@@ -1,0 +1,13 @@
+# Jekyll config for the Rofacto project page
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+# Files that should not be copied into the build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - rofacto.pdf
+  - vendor
