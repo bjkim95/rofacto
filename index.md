@@ -12,21 +12,19 @@ venue: Preprint, 2026
 authors:
   - name: Byungjun Kim
     affiliation: [1]
-    equal_contributor: true
     homepage: https://bjkim95.github.io
   - name: Taeksoo Kim
     affiliation: [1]
-    equal_contributor: true
     homepage: https://taeksuu.github.io/
   - name: Hyunsoo Cha
     affiliation: [1]
+    homepage: https://hyunsoocha.github.io/
   - name: Hanbyul Joo
     affiliation: [1, 2]
     homepage: https://jhugestar.github.io/
 affiliations:
   - Seoul National University
   - RLWRLD
-equal_note: "*Equal contribution"
 
 paper: static/pdf/rofacto.pdf
 # arxiv: https://arxiv.org/abs/XXXX.XXXXX   # TODO: add once posted
@@ -35,9 +33,9 @@ paper: static/pdf/rofacto.pdf
 
 <!-- TL;DR -->
 <div class="tldr">
-  <b>TL;DR:</b> We move two robot-specific factors — <b>action realization</b> and
-  <b>robot rendering</b> — outside the world model, so the model sees an action only as
-  <b>visible robot geometry</b> and learns how the scene responds to it.
+  <b>TL;DR:</b> We factor <b>action realization</b> and <b>robot appearance</b> out of the
+  world model, presenting actions as <b>visible robot geometry</b> and leaving the model to
+  learn how the scene responds.
 </div>
 
 <!-- Teaser -->
