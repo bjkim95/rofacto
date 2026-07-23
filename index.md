@@ -28,7 +28,7 @@ affiliations:
 
 paper: static/pdf/rofacto.pdf
 # arxiv: https://arxiv.org/abs/XXXX.XXXXX   # TODO: add once posted
-# code:  https://github.com/snuvclab/rofacto  # TODO: released later
+code:  https://github.com/bjkim95/rofacto   # repo live for Watch/Star; code released later
 ---
 
 <!-- TL;DR -->
@@ -113,17 +113,36 @@ Conditioning on **raw actions** forces the model to additionally learn the robot
 
 ## Impact of Depth Conditioning
 
-<section class="section results-section">
-<div class="results-grid">
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/depth/depth_ablation_1.mp4</small></div>
-    <div class="caption">Mesh-only · With depth · GT</div>
+<section class="embod">
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c08_full.mp4" type="video/mp4">
+    </video>
   </div>
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/depth/depth_ablation_2.mp4</small></div>
-    <div class="caption">Mesh-only · With depth · GT</div>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c08_loop.mp4" type="video/mp4">
+    </video>
   </div>
-</div>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c02_full.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c02_loop.mp4" type="video/mp4">
+    </video>
+  </div>
+
 </section>
 
 RGB mesh rendering places the robot only in the **image plane**, where overlap alone cannot tell a real touch from a robot simply passing in front of or behind an object. We pair **end-effector depth** with **scene depth** to make the model *depth-aware*, avoiding **false contact from image-plane overlap**.
