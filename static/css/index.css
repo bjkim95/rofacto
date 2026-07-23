@@ -9,6 +9,15 @@
 }
 
 html { scroll-behavior: smooth; }
+html, body { overflow-x: hidden; }
+
+/* Keep wide, non-wrapping MathJax display equations from stretching the page;
+   let each one scroll horizontally within its own width on narrow screens. */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
 body {
   font-family: 'Inter', sans-serif;
@@ -220,6 +229,73 @@ hr {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--muted);
+}
+
+/* ---------- Embodiment generalization (full-width strips) ---------- */
+.embod { margin: 1rem 0 0; }
+
+.embod-note {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0 0 0.5rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--border);
+}
+
+.embod-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-top: 2rem;
+}
+.embod-group-sub {
+  color: var(--muted);
+  margin: 0.35rem 0 0.9rem;
+  font-size: 0.98rem;
+}
+.embod-group-sub a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(67, 56, 202, 0.35);
+}
+.embod-group-sub a:hover { border-bottom-color: var(--accent); }
+
+.embod-example {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem;
+  margin: 0.9rem 0;
+  box-shadow: 0 6px 16px -12px rgba(15, 23, 42, 0.4);
+}
+.embod-example video {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  background: #000;
+}
+/* 3-column header aligned to the Mesh | Ours | GT panels of the strip */
+.strip-labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0.1rem 0 0.5rem;
+}
+.strip-labels span:nth-child(2) { color: var(--accent); }
+.embod-cap {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ---------- Collapsible details ---------- */

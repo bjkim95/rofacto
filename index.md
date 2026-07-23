@@ -67,17 +67,27 @@ Action-conditioned video world models predict future observations from an initia
   </figcaption>
 </figure>
 
-An action-conditioned robot world model predicts a future video $$\mathbf{V}_{1:F}$$ from the current observation and a proposed action sequence $$\boldsymbol{a}_{1:F}$$. Instead of conditioning on raw actions, we factor out two robot-specific steps as fixed preprocessing and leave the world model with the shared problem of predicting *scene response* around rendered robot motion:
+Instead of conditioning the world model on raw action commands, we factor out two robot-specific steps as fixed preprocessing. First, each action is rolled through the robot's own controller and kinematics into a **nominal trajectory** — robot-only motion before any scene interaction. Second, this trajectory is rendered through the robot URDF into camera-aligned **robot mesh RGB and end-effector depth**. Paired with a camera-aware static stream (scene appearance and depth), these become the model's entire action interface, leaving it the single shared problem of predicting how the scene responds.
 
-$$\boldsymbol{q}_{1:F} = \Phi_R(\boldsymbol{a}_{1:F};\boldsymbol{q}_0), \qquad (\mathbf{M}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{eef}}_{1:F}) = \Pi_R(\boldsymbol{q}_{1:F};\mathcal{C}_{1:F}).$$
+<details>
+<summary><strong>Formal formulation</strong></summary>
 
-The realization operator $$\Phi_R$$ maps actions into a **nominal trajectory** (robot-only motion before scene interaction), and the rendering operator $$\Pi_R$$ projects it into camera-aligned **robot mesh RGB and end-effector depth**. A camera-aware static stream supplies scene appearance and depth, so the model learns
+An action-conditioned robot world model predicts a future video $$\mathbf{V}_{1:F}$$ from the current observation and a proposed action sequence $$\boldsymbol{a}_{1:F}$$. The realization operator $$\Phi_R$$ maps actions into a nominal trajectory, and the rendering operator $$\Pi_R$$ projects it into camera-aligned robot mesh RGB and end-effector depth:
+
+$$\begin{aligned}
+\boldsymbol{q}_{1:F} &= \Phi_R(\boldsymbol{a}_{1:F};\boldsymbol{q}_0), \\
+(\mathbf{M}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{eef}}_{1:F}) &= \Pi_R(\boldsymbol{q}_{1:F};\mathcal{C}_{1:F}).
+\end{aligned}$$
+
+With a camera-aware static stream supplying scene appearance $$\mathbf{B}^{\mathrm{rgb}}_{1:F}$$ and depth $$\mathbf{D}^{\mathrm{scene}}_{1:F}$$, the model learns
 
 $$p_\theta\!\left(\mathbf{V}_{1:F} \mid \mathbf{B}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{scene}}_{1:F}, \mathbf{M}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{eef}}_{1:F}, \mathcal{T}\right),$$
 
 where the text prompt $$\mathcal{T}$$ carries scene context only and excludes the intended action or outcome.
 
-### 💡 Key Insight #1 — Action realization via the nominal trajectory
+</details>
+
+### Nominal Trajectory Conditioning
 
 > **The right action signal lives between the raw command and the logged state: the controller-realized *nominal trajectory* is available at deployment, yet it does not leak scene interaction.**
 
@@ -99,20 +109,24 @@ Conditioning on **raw actions** forces the model to additionally learn the robot
 
 </details>
 
-### 💡 Key Insight #2 — Robot rendering with depth
+---
 
-> **Rendering the nominal trajectory as URDF robot geometry makes the action visible in image space; pairing end-effector depth with scene depth resolves contact and occlusion beyond 2D overlap.**
+## Impact of Depth Conditioning
 
-<details>
-<summary><strong>What the rendered interface provides</strong></summary>
+<section class="section results-section">
+<div class="results-grid">
+  <div class="result-card">
+    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/depth/depth_ablation_1.mp4</small></div>
+    <div class="caption">Mesh-only · With depth · GT</div>
+  </div>
+  <div class="result-card">
+    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/depth/depth_ablation_2.mp4</small></div>
+    <div class="caption">Mesh-only · With depth · GT</div>
+  </div>
+</div>
+</section>
 
-The renderer $$\Pi_R$$ turns a nominal trajectory into **URDF mesh RGB** in the target camera frame, preserving link geometry, wrist offsets, gripper shape, and end-effector structure. This makes the action visible to the video model in the same visual coordinates as the target video and factors the robot's geometry and appearance out of the learned model.
-
-RGB mesh rendering localizes the robot in image space, but it cannot tell whether an end-effector is in front of, behind, or in contact with an object. We therefore add **end-effector depth** $$\mathbf{D}^{\mathrm{eef}}_{1:F}$$ alongside **static scene depth** $$\mathbf{D}^{\mathrm{scene}}_{1:F}$$. Together these depth signals disambiguate proximity, likely contact, and occlusion beyond apparent 2D overlap — the model treats image-plane overlap as contact far less often.
-
-We instantiate the scene-response model with a latent video diffusion backbone, following a residual-dynamics (full-mask video inpainting) formulation: the static context serves as the conditioning input, and the model learns interaction-induced scene changes conditioned on the static context and rendered robot geometry.
-
-</details>
+RGB mesh rendering places the robot only in the **image plane**, where overlap alone cannot tell a real touch from a robot simply passing in front of or behind an object. We pair **end-effector depth** with **scene depth** to make the model *depth-aware*, avoiding **false contact from image-plane overlap**.
 
 ---
 
@@ -169,14 +183,45 @@ The rendered interface gives the video model direct pixel-space evidence of robo
 
 ## Zero-Shot Embodiment Generalization
 
-<figure class="fig">
-  <img src="static/image/embodiment.png" alt="Zero-shot embodiment composition">
-  <figcaption>
-    <b>Zero-shot embodiment composition.</b> HRDexDB contains an unseen xArm 6–Inspire F1 pairing.
-    Because the interface represents action as rendered URDF geometry, unseen robot geometry is consumed by
-    the same visual conditioning path and still drives the predicted scene response.
-  </figcaption>
-</figure>
+Since an action enters only as **rendered robot geometry**, robots never seen during training — a new arm–hand pairing, or even multiple arms — pass through the exact same interface and still drive a plausible scene response. This is nontrivial for vector- or pose-conditioned models, where a new embodiment brings a different action space and a new action-to-motion mapping to learn. Each clip shows **Mesh rendering (input)  ·  Ours (generated)  ·  GT**.
+
+<section class="embod">
+
+  <p class="embod-note">Beyond the rendered mesh shown here, the model also conditions on scene depth and end-effector depth; both are omitted from these strips for space.</p>
+
+  <!-- ===== Group 1: unseen arm + hand composition (HRDexDB) ===== -->
+  <div class="embod-group-title">Unseen Composition — Robot Arm + Dexterous Hand</div>
+  <p class="embod-group-sub">An xArm 6 arm paired with an Inspire F1 hand — a combination never seen together in training. Evaluated on <a href="https://snuvclab.github.io/HRDexDB/" target="_blank">HRDexDB</a>.</p>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Mesh rendering</span><span>Ours</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata"
+           poster="static/videos/embodiment/hrdex_apple.jpg">
+      <source src="static/videos/embodiment/hrdex_apple.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Mesh rendering</span><span>Ours</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata"
+           poster="static/videos/embodiment/hrdex_banana.jpg">
+      <source src="static/videos/embodiment/hrdex_banana.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ===== Group 2: multiple arms (DexMimicGen) ===== -->
+  <div class="embod-group-title">Multiple Robot Arms — Dual Robot Arms</div>
+  <p class="embod-group-sub">Two robot arms composed into a single scene — a robot count outside the single-arm training setup. Evaluated on <a href="https://dexmimicgen.github.io/" target="_blank">DexMimicGen</a>.</p>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Mesh rendering</span><span>Ours</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata"
+           poster="static/videos/embodiment/dexmimicgen_dual.jpg">
+      <source src="static/videos/embodiment/dexmimicgen_dual.mp4" type="video/mp4">
+    </video>
+  </div>
+
+</section>
 
 ## Application: Human Demonstration → Robot Video
 
