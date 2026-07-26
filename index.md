@@ -39,11 +39,9 @@ code:  https://github.com/bjkim95/rofacto   # repo live for Watch/Star; code rel
 </div>
 
 <!-- Teaser -->
-<div class="video-placeholder">
-  <i class="fas fa-play-circle"></i>
-  <span>Teaser video</span>
-  <small>drop <code>static/videos/teaser.mp4</code> here</small>
-</div>
+<video class="teaser-video" controls autoplay muted loop playsinline preload="metadata">
+  <source src="static/videos/teaser.mp4" type="video/mp4">
+</video>
 
 <!-- Abstract -->
 <div class="columns is-centered has-text-centered">
@@ -57,148 +55,116 @@ Action-conditioned video world models predict future observations from an initia
 
 ---
 
-## Method Overview
-
-<figure class="fig">
-  <img src="static/image/overview.png" alt="Robot-factored visual world-model interface">
-  <figcaption>
-    <b>Visual world-model interface.</b> Static context carries scene and viewpoint;
-    rendered nominal robot geometry carries action; the diffusion model predicts the scene response.
-  </figcaption>
-</figure>
-
-Instead of conditioning the world model on raw action commands, we factor out two robot-specific steps as fixed preprocessing. First, each action is rolled through the robot's own controller and kinematics into a **nominal trajectory** — robot-only motion before any scene interaction. Second, this trajectory is rendered through the robot URDF into camera-aligned **robot mesh RGB and end-effector depth**. Paired with a camera-aware static stream (scene appearance and depth), these become the model's entire action interface, leaving it the single shared problem of predicting how the scene responds.
-
-<details>
-<summary><strong>Formal formulation</strong></summary>
-
-An action-conditioned robot world model predicts a future video $$\mathbf{V}_{1:F}$$ from the current observation and a proposed action sequence $$\boldsymbol{a}_{1:F}$$. The realization operator $$\Phi_R$$ maps actions into a nominal trajectory, and the rendering operator $$\Pi_R$$ projects it into camera-aligned robot mesh RGB and end-effector depth:
-
-$$\begin{aligned}
-\boldsymbol{q}_{1:F} &= \Phi_R(\boldsymbol{a}_{1:F};\boldsymbol{q}_0), \\
-(\mathbf{M}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{eef}}_{1:F}) &= \Pi_R(\boldsymbol{q}_{1:F};\mathcal{C}_{1:F}).
-\end{aligned}$$
-
-With a camera-aware static stream supplying scene appearance $$\mathbf{B}^{\mathrm{rgb}}_{1:F}$$ and depth $$\mathbf{D}^{\mathrm{scene}}_{1:F}$$, the model learns
-
-$$p_\theta\!\left(\mathbf{V}_{1:F} \mid \mathbf{B}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{scene}}_{1:F}, \mathbf{M}^{\mathrm{rgb}}_{1:F}, \mathbf{D}^{\mathrm{eef}}_{1:F}, \mathcal{T}\right),$$
-
-where the text prompt $$\mathcal{T}$$ carries scene context only and excludes the intended action or outcome.
-
-</details>
-
-### Nominal Trajectory Conditioning
-
-> **The right action signal lives between the raw command and the logged state: the controller-realized *nominal trajectory* is available at deployment, yet it does not leak scene interaction.**
-
-<figure class="fig">
-  <img src="static/image/realization_gaps.png" alt="Action-to-state realization gaps">
-  <figcaption>
-    <b>Action-to-state realization gaps.</b> (a) Robot-specific controllers and hardware constraints
-    create a gap between raw actions and nominal trajectories. (b) Scene interaction creates a gap between
-    nominal trajectories and realized states. The nominal trajectory is the deployment-available middle signal.
-  </figcaption>
-</figure>
-
-<details>
-<summary><strong>Why not raw actions or logged states?</strong></summary>
-
-The mismatch between action signals decomposes into two gaps. The **action-realization gap** is the difference between the raw action and the controller-realized nominal motion; the **nominal–realized gap** is the difference between nominal robot motion and the state actually observed in a contact-rich rollout.
-
-Conditioning on **raw actions** forces the model to additionally learn the robot-specific realization process. Conditioning on **logged future states** is visually aligned with the target video, but those states already encode contact, compliance, latency, and closed-loop corrections — i.e., they leak the interaction outcome the world model is meant to predict. Our factorization assigns the first gap to the robot-specific realization process $$\Phi_R$$ and leaves the second gap, together with object motion and occlusion, to the world model.
-
-</details>
-
----
-
-## Impact of Depth Conditioning
-
-<section class="embod">
-
-  <div class="embod-example">
-    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
-    <video controls autoplay muted loop playsinline preload="metadata">
-      <source src="static/videos/depth/depth_c08_full.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="embod-example">
-    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
-    <video controls autoplay muted loop playsinline preload="metadata">
-      <source src="static/videos/depth/depth_c08_loop.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="embod-example">
-    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
-    <video controls autoplay muted loop playsinline preload="metadata">
-      <source src="static/videos/depth/depth_c02_full.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="embod-example">
-    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
-    <video controls autoplay muted loop playsinline preload="metadata">
-      <source src="static/videos/depth/depth_c02_loop.mp4" type="video/mp4">
-    </video>
-  </div>
-
-</section>
-
-RGB mesh rendering places the robot only in the **image plane**, where overlap alone cannot tell a real touch from a robot simply passing in front of or behind an object. We pair **end-effector depth** with **scene depth** to make the model *depth-aware*, avoiding **false contact from image-plane overlap**.
-
----
-
 ## Results
 
 <section class="section results-section">
-<h3 class="title is-4 has-text-centered">DROID — external / fixed cameras</h3>
-<div class="results-grid">
-  <div class="result-card">
-    <!-- <video controls muted loop playsinline preload="metadata"><source src="static/videos/droid/result_1.mp4" type="video/mp4"></video> -->
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/droid/result_1.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+
+<h3 class="title is-4 has-text-centered">DROID</h3>
+<p class="results-sub">Fixed exterior camera · robot arm with parallel gripper</p>
+<div class="carousel results-carousel">
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/droid/rank041.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/droid/result_2.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/droid/rank005.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/droid/result_3.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/droid/rank014.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/droid/result_4.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/droid/rank108.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
 </div>
 
-<h3 class="title is-4 has-text-centered">RoboCasa-GR1 — humanoid manipulation</h3>
-<div class="results-grid">
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/robocasa/result_1.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+<h3 class="title is-4 has-text-centered">RoboCasa-GR1</h3>
+<p class="results-sub">Egocentric moving camera · humanoid with dexterous hands</p>
+<div class="carousel results-carousel">
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/robocasa/rank051.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
-  <div class="result-card">
-    <div class="video-placeholder"><i class="fas fa-robot"></i><small>static/videos/robocasa/result_2.mp4</small></div>
-    <div class="caption">Static context · Rendered robot · Prediction · GT</div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/robocasa/rank050.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/robocasa/rank038.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels"><span>AdaLN<small>vector-based conditioning</small></span><span>Ours<small>rendering-based conditioning</small></span><span>GT</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/robocasa/rank016.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
 </div>
+
 </section>
 
 The rendered interface gives the video model direct pixel-space evidence of robot motion, so predicted scene changes are better localized around the robot and the contact region than vector- or pose-conditioned baselines. Rendered robot geometry localizes robot-driven scene changes, while depth helps resolve contact-relevant proximity and occlusion.
 
 ---
 
-## Prompt Following
+## Action Controllability
 
-<figure class="fig">
-  <img src="static/image/prompt_following.png" alt="Prompt-following probe">
-  <figcaption>
-    <b>Prompt-following probe.</b> Holding the initial scene fixed and editing only the rendered nominal
-    motion changes the predicted scene response — the model uses rendered robot geometry as the action signal.
-  </figcaption>
-</figure>
+Holding the initial scene fixed and editing only the rendered nominal motion changes the predicted scene response — the model uses rendered robot geometry as the action signal.
+
+<div class="carousel results-carousel">
+  <div class="item">
+    <div class="cf-fig">
+      <div class="cf-collabels"><span>Original action</span><span>Edited action</span></div>
+      <div class="cf-rowlabels"><span>Rendered action</span><span>Prediction</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/counterfactual/pick_tube.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="gap-cap">The edited trajectory is redirected toward a different object in the same scene.</p>
+  </div>
+  <div class="item">
+    <div class="cf-fig">
+      <div class="cf-collabels"><span>Original action</span><span>Edited action</span></div>
+      <div class="cf-rowlabels"><span>Rendered action</span><span>Prediction</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/counterfactual/pick_tube_higher.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="gap-cap">The edited trajectory is re-solved to approach from higher above the object.</p>
+  </div>
+</div>
 
 ## Zero-Shot Embodiment Generalization
 
@@ -211,14 +177,6 @@ Since an action enters only as **rendered robot geometry**, robots never seen du
   <!-- ===== Group 1: unseen arm + hand composition (HRDexDB) ===== -->
   <div class="embod-group-title">Unseen Composition — Robot Arm + Dexterous Hand</div>
   <p class="embod-group-sub">An xArm 6 arm paired with an Inspire F1 hand — a combination never seen together in training. Evaluated on <a href="https://snuvclab.github.io/HRDexDB/" target="_blank">HRDexDB</a>.</p>
-
-  <div class="embod-example">
-    <div class="strip-labels"><span>Mesh rendering</span><span>Ours</span><span>GT</span></div>
-    <video controls autoplay muted loop playsinline preload="metadata"
-           poster="static/videos/embodiment/hrdex_apple.jpg">
-      <source src="static/videos/embodiment/hrdex_apple.mp4" type="video/mp4">
-    </video>
-  </div>
 
   <div class="embod-example">
     <div class="strip-labels"><span>Mesh rendering</span><span>Ours</span><span>GT</span></div>
@@ -244,20 +202,127 @@ Since an action enters only as **rendered robot geometry**, robots never seen du
 
 ## Application: Human Demonstration → Robot Video
 
+<section class="embod">
+<div class="carousel results-carousel">
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels is-2"><span>DexYCB human demonstration</span><span>Ours — generated robot rollout</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/human2robot/detergent.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="item">
+    <div class="embod-example">
+      <div class="strip-labels is-2"><span>DexYCB human demonstration</span><span>Ours — generated robot rollout</span></div>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="static/videos/human2robot/wood_block.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+</section>
+
+---
+
+## Method Overview
+
 <figure class="fig">
-  <img src="static/image/human2robot.png" alt="Human demonstration to robot video">
+  <img src="static/image/overview.png" alt="Robot-factored visual world-model interface">
   <figcaption>
-    <b>Human demonstration to robot video.</b> Human manipulation videos (DexYCB) are retargeted to a robot
-    and rendered as the same mesh-and-depth interface, then converted into a robot-interaction rollout —
-    the world model consumes rendered robot geometry regardless of the motion source.
+    <b>Visual world-model interface.</b> Static context carries scene and viewpoint;
+    rendered nominal robot geometry carries action; the diffusion model predicts the scene response.
   </figcaption>
 </figure>
 
-<div class="video-placeholder">
-  <i class="fas fa-play-circle"></i>
-  <span>Human-to-robot rollouts</span>
-  <small>drop <code>static/videos/human2robot.mp4</code> here</small>
+Instead of conditioning the world model on raw action commands, we factor out two robot-specific steps as fixed preprocessing. First, each action is rolled through the robot's own controller and kinematics into a **nominal trajectory** — robot-only motion before any scene interaction. Second, this trajectory is rendered through the robot URDF into camera-aligned **robot mesh RGB and end-effector depth**. Paired with a camera-aware static stream (scene appearance and depth), these become the model's entire action interface, leaving it the single shared problem of predicting how the scene responds.
+
+### Nominal Trajectory Conditioning
+
+> **The right action signal lives between the raw command and the logged state: the controller-realized *nominal trajectory* is available at deployment and does not leak scene interaction.**
+
+<div class="gap-block">
+  <div class="gap-title">(a) Three action signals — which one should condition the world model?</div>
+  <div class="gap-row is-3">
+    <figure class="gap-cell">
+      <video controls autoplay muted loop playsinline preload="metadata">
+        <source src="static/videos/gaps/a_action_outline.mp4" type="video/mp4">
+      </video>
+      <figcaption>Raw action</figcaption>
+    </figure>
+    <figure class="gap-cell is-pivot">
+      <video controls autoplay muted loop playsinline preload="metadata">
+        <source src="static/videos/gaps/a_nominal_outline.mp4" type="video/mp4">
+      </video>
+      <figcaption>Nominal trajectory</figcaption>
+    </figure>
+    <figure class="gap-cell">
+      <video controls autoplay muted loop playsinline preload="metadata">
+        <source src="static/videos/gaps/a_logged_outline.mp4" type="video/mp4">
+      </video>
+      <figcaption>Realized state</figcaption>
+    </figure>
+  </div>
+  <p class="gap-cap">DROID — the same episode rendered from each of the three signals.</p>
+  <div class="gap-def">
+    <b>Nominal trajectory</b> — the motion the robot is expected to follow under the commanded action
+    <i>in the absence of any scene interaction</i>, obtained by rolling the command through the robot's
+    own controller and kinematics.
+  </div>
+  <p>A <b>raw action</b> is a command, not a motion. It has not yet passed through the controller, so it reflects
+  neither the controller's tracking behavior nor the robot's kinematic and actuation limits — and it therefore
+  departs substantially from the state the robot actually reaches.</p>
+  <p>The <b>realized state</b> is recorded in every dataset, but it is unavailable at inference: it is precisely the
+  future the world model is asked to predict. Conditioning on it leaks the interaction outcome, since contact,
+  compliance, and latency are already baked into the logged state.</p>
 </div>
+
+<div class="gap-block">
+  <div class="gap-title">(b) The nominal–realized gap — what should the world model learn?</div>
+  <div class="gap-row" style="--gap-ar: 416 / 206">
+    <figure class="gap-cell is-pivot">
+      <video controls autoplay muted loop playsinline preload="metadata">
+        <source src="static/videos/gaps/b_nominal_outline.mp4" type="video/mp4">
+      </video>
+      <figcaption>Nominal trajectory</figcaption>
+    </figure>
+    <figure class="gap-cell">
+      <video controls autoplay muted loop playsinline preload="metadata">
+        <source src="static/videos/gaps/b_realized_outline.mp4" type="video/mp4">
+      </video>
+      <figcaption>Realized state</figcaption>
+    </figure>
+  </div>
+  <p class="gap-cap">RoboCasa-GR1 — nominal trajectory and realized state on a contact-rich rollout.</p>
+  <p>The two coincide while the robot moves freely, and separate once it meets the scene, where contact and
+  compliance pull the realized motion away from the nominal plan. That divergence is not noise in the
+  conditioning signal — it is the interaction itself, and predicting it is exactly what we leave to the
+  world model.</p>
+</div>
+
+---
+
+## Impact of Depth Conditioning
+
+<section class="embod">
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c08_full.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="embod-example">
+    <div class="strip-labels"><span>Without depth</span><span>With depth</span><span>GT</span></div>
+    <video controls autoplay muted loop playsinline preload="metadata">
+      <source src="static/videos/depth/depth_c02_full.mp4" type="video/mp4">
+    </video>
+  </div>
+
+</section>
+
+RGB mesh rendering places the robot only in the **image plane**, where overlap alone cannot tell a real touch from a robot simply passing in front of or behind an object. We pair **end-effector depth** with **scene depth** to make the model *depth-aware*, avoiding **false contact from image-plane overlap**.
 
 ---
 
