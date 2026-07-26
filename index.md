@@ -237,7 +237,9 @@ Since an action enters only as **rendered robot geometry**, robots never seen du
 
 Instead of conditioning the world model on raw action commands, we factor out two robot-specific steps as fixed preprocessing. First, each action is rolled through the robot's own controller and kinematics into a **nominal trajectory** — robot-only motion before any scene interaction. Second, this trajectory is rendered through the robot URDF into camera-aligned **robot mesh RGB and end-effector depth**. Paired with a camera-aware static stream (scene appearance and depth), these become the model's entire action interface, leaving it the single shared problem of predicting how the scene responds.
 
-### Nominal Trajectory Conditioning
+---
+
+## Nominal Trajectory Conditioning
 
 > **The right action signal lives between the raw command and the logged state: the controller-realized *nominal trajectory* is available at deployment and does not leak scene interaction.**
 

@@ -403,7 +403,9 @@ hr {
   align-items: start;
 }
 .gap-row.is-3 { grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 640px) { .gap-row, .gap-row.is-3 { grid-template-columns: 1fr; } }
+/* Matches the breakpoint used for the carousels and the scrolling strips: below
+   it three panels would be ~200px wide and unreadable. */
+@media (max-width: 768px) { .gap-row, .gap-row.is-3 { grid-template-columns: 1fr; } }
 
 /* Definition callout. Uses its own class rather than <blockquote> so Bulma's
    `.content blockquote` (higher specificity) cannot override it. */
