@@ -9,5 +9,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - rofacto.pdf
   - vendor
