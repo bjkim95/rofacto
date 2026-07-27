@@ -26,7 +26,6 @@ affiliations:
   - Seoul National University
   - RLWRLD
 
-paper: static/pdf/rofacto.pdf
 arxiv: https://arxiv.org/abs/2607.22535
 code:  https://github.com/bjkim95/rofacto   # repo live for Watch/Star; code released later
 ---
