@@ -27,7 +27,7 @@ affiliations:
   - RLWRLD
 
 paper: static/pdf/rofacto.pdf
-# arxiv: https://arxiv.org/abs/XXXX.XXXXX   # TODO: add once posted
+arxiv: https://arxiv.org/abs/2607.22535
 code:  https://github.com/bjkim95/rofacto   # repo live for Watch/Star; code released later
 ---
 
@@ -334,7 +334,7 @@ RGB mesh rendering places the robot only in the **image plane**, where overlap a
 @article{kim2026rofacto,
   title   = {Robot-Factored World Models via Robot Rendering},
   author  = {Kim, Byungjun and Kim, Taeksoo and Cha, Hyunsoo and Joo, Hanbyul},
-  journal = {arXiv preprint},
+  journal = {arXiv preprint arXiv:2607.22535},
   year    = {2026}
 }
 ```
