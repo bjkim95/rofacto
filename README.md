@@ -1,4 +1,4 @@
-# Rofacto — Project Page
+# RoFacto — Project Page
 
 Project page for **Robot-Factored World Models via Robot Rendering**.
 
@@ -24,17 +24,17 @@ index.md                    # page content (front matter = title/authors/links)
 static/
   css/   bulma.min.css, index.css
   js/    fontawesome, carousel/slider init
-  image/ figures cropped from the paper (overview, gaps, embodiment, ...)
-  pdf/   rofacto.pdf  (linked by the "Paper" button)
-  videos/  <-- drop result/teaser videos here (placeholders are in index.md)
+  image/ figures cropped from the paper (overview, gaps, embodiment, ...) + favicons
+  videos/ teaser.mp4 plus result clips, grouped by experiment
+          (droid/, robocasa/, depth/, gaps/, embodiment/, human2robot/, counterfactual/)
 ```
 
-## TODO before publishing
+The paper is served from arXiv, not from this repo — the "arXiv" button reads the
+`arxiv:` field in the `index.md` front matter.
 
-- [ ] Add `static/videos/teaser.mp4` and result clips (placeholders mark every slot).
-- [ ] Fill in `arxiv:` and `code:` links in `index.md` front matter.
+## TODO
+
 - [ ] Replace the `Preprint, 2026` venue once decided.
-- [ ] Confirm author homepages / affiliations.
 
 ## Deploy (GitHub Pages)
 
