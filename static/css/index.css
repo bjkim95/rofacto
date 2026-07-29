@@ -27,6 +27,18 @@ body {
 
 .head-hero .hero-body { padding-bottom: 0.5rem; }
 
+.publication-project-name {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.78rem;
+  border-radius: 999px;
+  margin-bottom: 1.05rem;
+}
+
 .publication-title {
   font-weight: 800;
   letter-spacing: -0.02em;

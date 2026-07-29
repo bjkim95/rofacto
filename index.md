@@ -3,8 +3,9 @@ layout: project_page
 permalink: /
 
 title: Robot-Factored World Models via Robot Rendering
-tab_title: Rofacto
-social_title: Robot-Factored World Models via Robot Rendering
+project_name: RoFacto
+tab_title: RoFacto
+social_title: "RoFacto: Robot-Factored World Models via Robot Rendering"
 social_description: Action-conditioned video world models that expose actions as rendered robot geometry — a deployment-realistic, embodiment-shared visual interface.
 description: Robot-Factored World Models move action realization and robot rendering outside the world model, exposing actions as visible robot geometry (URDF mesh RGB + end-effector/scene depth) for action-conditioned video generation.
 
@@ -32,7 +33,7 @@ code:  https://github.com/bjkim95/rofacto   # repo live for Watch/Star; code rel
 
 <!-- TL;DR -->
 <div class="tldr">
-  <b>TL;DR:</b> We factor <b>action realization</b> and <b>robot appearance</b> out of the
+  <b>TL;DR:</b> <b>{{ page.project_name }}</b> factors <b>action realization</b> and <b>robot appearance</b> out of the
   world model, presenting actions as <b>visible robot geometry</b> and leaving the model to
   learn how the scene responds.
 </div>

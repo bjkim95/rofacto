@@ -16,7 +16,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="{{ page.title }}">
+  <meta property="og:site_name" content="{{ page.project_name | default: page.title }}">
   <meta property="og:title" content="{{ page.social_title | default: page.title }}">
   <meta property="og:description" content="{{ page.social_description | default: page.description }}">
   {% if page.social_image %}<meta property="og:image" content="{{ page.social_image }}">{% endif %}
@@ -32,6 +32,9 @@
   {% endfor %}
 
   <meta name="theme-color" content="#4338ca">
+
+  <link rel="icon" type="image/svg+xml" href="./static/image/favicon-rofacto.svg">
+  <link rel="alternate icon" type="image/x-icon" href="./static/image/favicon-rofacto.ico">
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 
@@ -54,6 +57,9 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
+          {% if page.project_name %}
+          <div class="publication-project-name">{{ page.project_name }}</div>
+          {% endif %}
           <h1 class="title is-1 publication-title">{{ page.title }}</h1>
 
           {% if page.authors %}
