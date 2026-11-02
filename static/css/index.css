@@ -29,31 +29,30 @@ body {
 
 .publication-project-name {
   display: inline-block;
-  background: var(--accent-soft);
   color: var(--accent);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 0.3rem 0.78rem;
-  border-radius: 999px;
-  margin-bottom: 1.05rem;
-}
-
-.publication-title {
+  font-size: clamp(3.5rem, 9vw, 6rem);
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.12;
-  font-size: clamp(1.6rem, 4.6vw, 2.5rem) !important;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  letter-spacing: -0.065em;
+  line-height: 1.15;
+  padding: 0 0.08em 0.08em;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(110deg, var(--accent) 15%, var(--accent-2) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 1.2rem !important;
 }
 
-/* keep the title on a single line on tablet/desktop */
-@media (min-width: 769px) {
-  .publication-title { white-space: nowrap; }
+.publication-title {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem) !important;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.2rem !important;
+  text-wrap: balance;
 }
 
 .publication-authors {

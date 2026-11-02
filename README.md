@@ -34,7 +34,7 @@ The paper is served from arXiv, not from this repo — the "arXiv" button reads 
 
 ## TODO
 
-- [ ] Replace the `Preprint, 2026` venue once decided.
+- [x] Set the venue to `CoRL 2026`.
 
 ## Deploy (GitHub Pages)
 

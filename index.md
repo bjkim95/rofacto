@@ -9,7 +9,7 @@ social_title: "RoFacto: Robot-Factored World Models via Robot Rendering"
 social_description: Action-conditioned video world models that expose actions as rendered robot geometry — a deployment-realistic, embodiment-shared visual interface.
 description: Robot-Factored World Models move action realization and robot rendering outside the world model, exposing actions as visible robot geometry (URDF mesh RGB + end-effector/scene depth) for action-conditioned video generation.
 
-venue: Preprint, 2026
+venue: CoRL 2026
 authors:
   - name: Byungjun Kim
     affiliation: [1]
@@ -331,10 +331,10 @@ RGB mesh rendering places the robot only in the **image plane**, where overlap a
 ## BibTeX
 
 ```bibtex
-@article{kim2026rofacto,
+@inproceedings{kim2026rofacto,
   title   = {Robot-Factored World Models via Robot Rendering},
   author  = {Kim, Byungjun and Kim, Taeksoo and Cha, Hyunsoo and Joo, Hanbyul},
-  journal = {arXiv preprint arXiv:2607.22535},
+  booktitle = {Conference on Robot Learning},
   year    = {2026}
 }
 ```
