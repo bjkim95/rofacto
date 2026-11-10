@@ -74,10 +74,10 @@ robot/geometry conditions. Distributed under Apache-2.0; see `LICENSE` and `NOTI
 `SHA256SUMS` and `release_metadata.json` identify the exact files and code revision.
 
 ```bibtex
-@article{kim2026rofacto,
+@inproceedings{kim2026rofacto,
   title={Robot-Factored World Models via Robot Rendering},
   author={Kim, Byungjun and Kim, Taeksoo and Cha, Hyunsoo and Joo, Hanbyul},
-  journal={arXiv preprint arXiv:2607.22535},
+  booktitle={Conference on Robot Learning},
   year={2026}
 }
 ```

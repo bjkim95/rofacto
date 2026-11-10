@@ -2,6 +2,9 @@
 
 <h1>RoFacto: Robot-Factored World Models via Robot Rendering</h1>
 
+<p>Byungjun Kim · Taeksoo Kim · Hyunsoo Cha · Hanbyul Joo</p>
+<p><strong>CoRL 2026</strong></p>
+
 <p>
   <a href="https://bjkim95.github.io/rofacto/"><img src="https://img.shields.io/badge/Project_Page-2563EB?style=for-the-badge&amp;logo=homepage&amp;logoColor=white" alt="Project page" height="28"></a>
   &nbsp;
@@ -12,142 +15,142 @@
 
 </div>
 
-Official implementation of **Robot-Factored World Models via Robot Rendering**.
+**RoFacto predicts how a scene responds to robot actions using rendered robot motion.**
+The same visual interface supports new robot embodiments and turns retargeted
+human demonstrations into robot manipulation videos.
 
-<p align="center">
-  <b>TL;DR:</b> RoFacto moves two robot-specific factors out of the world model — action
-  realization (commands → a deployment-available nominal trajectory) and robot rendering
-  (that trajectory → explicit robot geometry through the URDF) — so the model only ever
-  sees the action as visible robot geometry and learns how objects respond to it.
-</p>
+This repository contains the paper's **Wan2.1** implementation and an additional
+**Cosmos3** version, with pretrained checkpoints for both.
 
-## Model backends
+## News
 
-The paper implementation uses **Wan2.1**. RoFacto also supports **Cosmos3 Nano/Super**
-with aligned static-scene and robot-render video tokens, using a separate runtime.
-
-| Backend | Installation | Inference/training |
-| --- | --- | --- |
-| Wan2.1 (paper) | `setup_env.sh` | Existing `training/wan` commands below |
-| Cosmos3 Nano/Super (additional backend) | [Cosmos3 installation](docs/cosmos3/installation.md) | [Inference](docs/cosmos3/inference.md) · [Training](docs/cosmos3/training.md) · [Checkpoints](docs/cosmos3/checkpoints.md) |
-
-Cosmos3 Nano/Super inference has passed single-A100 GPU checks. The ported
-distributed training/resume path is experimental and awaits GPU acceptance tests. Start with the
-[inference quickstart](docs/cosmos3/quickstart.md). See the
-[verification record](docs/cosmos3/verification.md) for tested profiles and pending
-release items. Existing Wan and DexYCB preprocessing remain in their original
-locations. Prepared H2R conditions use the same Cosmos3 inference entrypoint;
-see the [input example](examples/cosmos3/h2r/README.md).
-
-[Wan RGB/depth adapters](https://huggingface.co/byungjun-kim/RoFacto-Wan2.1-14B)
-and the [Cosmos3-Super adapter](https://huggingface.co/byungjun-kim/RoFacto-Cosmos3-Super)
-are available on Hugging Face. Checkpoint variants and download commands are
-listed in the [checkpoint guide](docs/checkpoints.md).
+- **November 2026:** Code and checkpoints released, including Cosmos3-Super for human-to-robot video generation.
 
 ## Overview
 
-Action-conditioned video world models predict future observations from an initial
-observation and an action signal. Conditioning directly on action commands asks the model
-to learn action realization itself; conditioning on logged future states leaks the very
-interaction outcomes it should predict. RoFacto factors both out:
+<p align="center">
+  <img src="https://bjkim95.github.io/rofacto/static/image/overview.png" alt="RoFacto overview: robot actions are converted into nominal motion and rendered geometry, which condition the world model together with scene context." width="100%">
+</p>
 
-1. **Action realization** — each command is rolled through the robot's own controller and
-   kinematics into a *nominal trajectory*, a middle signal available at deployment time.
-2. **Robot rendering** — the nominal trajectory is rendered through the robot URDF, moving
-   the robot's geometry, kinematics, and appearance out of the model and into explicit
-   rendered geometry.
+RoFacto first converts robot commands into a **nominal trajectory** using the
+robot's controller and kinematics, then renders that motion through its URDF.
+The video model takes these renderings together with static scene context and
+predicts the resulting scene response. Scene and end-effector depth provide
+additional cues for contact and occlusion.
 
-End-effector depth is paired with scene depth to resolve depth ambiguity, giving geometric
-cues for contact and occlusion beyond image-plane overlap. Together with camera-aware
-static RGB/depth context, this forms a shared visual interface that stays consistent across
-viewpoints and robot embodiments.
-
-The same interface lets the model **generate robot manipulation videos from human
-demonstrations**, by retargeting the hand motion and rendering it as robot geometry
-(see [`data_processing/dexycb/README_pipeline.md`](data_processing/dexycb/README_pipeline.md)).
-
-## Conditioning interface
-
-| Stream | Meaning |
-| --- | --- |
-| `videos` | target RGB clip |
-| `static_videos` | camera-aware static scene RGB (clip-first frame) |
-| `static_depth_videos` | static scene depth |
-| `robot_mesh_videos_nominal` | robot geometry rendered from the nominal trajectory |
-| `eef_depth_videos` | end-effector depth |
-
-Two trained Wan variants are available: **16ch** (RGB + rendered robot geometry) and
-**48ch** (+ scene depth + EEF depth). The depth pair is what resolves contact/occlusion
-ambiguity, and it matters most out of domain — on DexYCB human demonstrations the 16ch
-variant fails to form a coherent arm while 48ch does not.
-
-Robot model: **Panda + Robotiq FT300 force-torque sensor + Robotiq 2F-85**
-(`data_processing/droid_urdf_overlay/assets/panda_arm_robotiq_2f85_fts300.urdf`)
-is used for DROID rendering. The DexYCB guide also describes Panda + Inspire hand retargeting.
+See the [project page](https://bjkim95.github.io/rofacto/) for DROID and RoboCasa
+results, action editing, and zero-shot embodiment generalization. Additional
+Cosmos3 human-to-robot examples are featured in the
+[RLWRLD × NVIDIA blog](https://www.rlwrld.ai/en/insight/blog/116).
 
 ## Installation
 
 ```bash
-git clone https://github.com/bjkim95/rofacto
+git clone https://github.com/bjkim95/rofacto.git
 cd rofacto
-
-bash setup_env.sh rofacto     # Python 3.10 + CUDA 12.8 PyTorch + pinned deps
-conda activate rofacto
-# Optional: needed for dataset preprocessing / robot rendering, not prepared-input inference
-bash fetch_assets.sh
 ```
 
-The repository tracks code only. `fetch_assets.sh` downloads the upstream artifacts the
-pipelines read at runtime — DROID annotations from
-[`KarlP/droid`](https://huggingface.co/KarlP/droid) (~215 MB) and third-party meshes/code at
-selected upstream revisions. Existing downloads are reused on subsequent runs.
-
-Retargeting and IK use their own specialized envs (`spider`, `pyroki`); prompt captioning
-uses `qwen3vl` (vLLM). Details and the pinned dependency rationale are in
-[`README_ENV.md`](README_ENV.md).
-
-Model weights are external: Wan2.1-Fun-14B-InP base, LightX2V step-distill LoRA, SAM3,
-MiniMax-Remover, Qwen3-VL, and the trained RoFacto checkpoints.
-
-All commands below assume you run them from the repository root.
-
-## Getting Started
-
-### Data Preparation
-
-Per-pipeline guides:
-
-- [`data_processing/README.md`](data_processing/README.md) — index of all pipelines
-- [`data_processing/dexycb/README_pipeline.md`](data_processing/dexycb/README_pipeline.md) — human demo → robot video
-- [`data_processing/video_caption/README.md`](data_processing/video_caption/README.md) — Qwen3-VL scene captions
-
-A processed DROID sample (WAN latents are the `*_latents_480x832_wan/` siblings):
-
-```text
-data/droid/render_v2/<lab>/<hash>/
-├── videos_clips81/                     # RGB clips (81 frames)
-├── static_videos_clips81/              # static scene RGB
-├── static_depth_videos_clips81/        # static scene depth
-├── robot_mesh_videos_nominal_clips81/  # rendered robot geometry
-├── eef_depth_videos_clips81/           # end-effector depth
-├── prompts/                            # scene captions
-├── *_latents_480x832_wan/              # WAN VAE latents (per modality)
-└── prompt_embeds_*_wan/                # WAN T5 prompt embeds
-```
-
-Encode videos/prompts → WAN latents:
+### Wan2.1
 
 ```bash
-python3 data_processing/encode_with_wan.py \
-  --root_dir <processed_root> --dataset_type droid \
-  --modalities videos static_videos hand_videos prompts \
-  --hand_videos_dir_name robot_mesh_videos_nominal_clips81 \
-  --hand_videos_output_dir_stem robot_mesh_videos_nominal_clips81 \
-  --target_height 480 --target_width 832 --wan_version 2.1 \
-  --rank 0 --world_size 1
+bash setup_env.sh rofacto
+conda activate rofacto
 ```
 
-### Training
+Requires Linux, Conda, an NVIDIA GPU, and FFmpeg. See
+[environment setup](README_ENV.md) for dependencies and preprocessing tools.
+
+### Cosmos3
+
+Cosmos3 uses a separate environment:
+
+```bash
+bash setup_cosmos3.sh
+source .deps/cosmos-framework/.venv/bin/activate
+```
+
+See the [Cosmos3 setup guide](docs/cosmos3/installation.md) for prerequisites.
+
+## Pretrained Models
+
+| Model | Training data | Conditioning | Download |
+| --- | --- | --- | --- |
+| Wan2.1-14B · RGB | DROID | Static RGB + robot mesh | [Hugging Face](https://huggingface.co/byungjun-kim/RoFacto-Wan2.1-14B/tree/main/rgb-droid) |
+| Wan2.1-14B · RGB + Depth | DROID + RoboCasa | Static RGB + robot mesh + scene/EEF depth | [Hugging Face](https://huggingface.co/byungjun-kim/RoFacto-Wan2.1-14B/tree/main/depth-droid-robocasa) |
+| Cosmos3-Super | DROID + RoboCasa | Static RGB + robot mesh | [Hugging Face](https://huggingface.co/byungjun-kim/RoFacto-Cosmos3-Super) |
+
+Download the RoFacto adapter and its corresponding base model separately.
+[Checkpoint instructions](docs/checkpoints.md) list the required files for each model.
+
+## Inference
+
+### Wan2.1
+
+Download the adapter and base model:
+
+```bash
+hf download byungjun-kim/RoFacto-Wan2.1-14B --local-dir models/rofacto-wan
+hf download alibaba-pai/Wan2.1-Fun-V1.1-14B-InP --local-dir models/wan-base
+```
+
+Prepare a static scene video and a camera-aligned robot mesh video at **832×480,
+81 frames**, then run:
+
+```bash
+python -m training.wan.inference \
+  --checkpoint_path models/rofacto-wan/rgb-droid \
+  --experiment_config models/rofacto-wan/rgb-droid/inference.yaml \
+  --base_model_path models/wan-base \
+  --video_path inputs/static.mp4 --static_video_path inputs/static.mp4 \
+  --robot_mesh_video_path inputs/mesh.mp4 \
+  --prompt_mode custom --custom_prompt 'A robot picks up the object.' \
+  --height 480 --width 832 --num_frames 81 \
+  --num_inference_steps 50 --guidance_scale 6 \
+  --output_dir outputs/rofacto-wan
+```
+
+For the depth model, use `depth-droid-robocasa` and provide
+`--static_disparity_video_path` and `--eef_depth_video_path`. See the
+[Wan model card](docs/model_cards/wan.md#download-and-use) for details.
+
+<details>
+<summary>Faster inference with LightX2V</summary>
+
+Four-step inference requires a separately downloaded LightX2V acceleration LoRA.
+Add the following options to the command above, replacing the step and guidance settings:
+
+```bash
+--lightx2v_lora_path /path/to/lightx2v.safetensors \
+--num_inference_steps 4 --guidance_scale 1.0 \
+--lightx2v_compat_mode force_compat --lightx2v_compat_strict
+```
+
+</details>
+
+### Cosmos3
+
+Follow the [Cosmos3 quickstart](docs/cosmos3/quickstart.md) to download the
+Super base model, VAE and RoFacto adapter, then generate from a static scene
+image/video, a robot mesh video and a text prompt. The guide includes a
+single-GPU configuration and [example inputs](examples/cosmos3/h2r/README.md).
+
+## Human-to-Robot Video Generation
+
+Retarget a human demonstration to the desired robot, render its motion, and
+combine it with the scene image after removing the human. RoFacto uses these
+conditions to generate the robot interaction video.
+
+- [DexYCB preprocessing](data_processing/dexycb/README_pipeline.md): hand retargeting, arm IK, robot rendering and conditioning preparation.
+- [Cosmos3 H2R quickstart](docs/cosmos3/quickstart.md): generation from prepared conditions, including longer clips.
+
+## Training
+
+Prepare robot renderings, scene context and captions following the
+[data preparation guide](data_processing/README.md). For Wan, preencode the
+videos and prompts into VAE latents and text embeddings before training.
+
+The Wan example configurations use four GPUs. Set the dataset and model paths
+in the configuration, then launch:
 
 ```bash
 accelerate launch --config_file accelerate_configs/deepspeed_4.yaml \
@@ -155,47 +158,16 @@ accelerate launch --config_file accelerate_configs/deepspeed_4.yaml \
   --experiment_config exps/smoke/wan21_14b_smoke_48ch.yaml --mode batch
 ```
 
-`exps/smoke/wan21_14b_smoke_{16,48}ch.yaml` are short smoke configs for both variants.
-The 14B LoRA path needs 4×80 GB-class GPUs with DeepSpeed ZeRO-2 and
-`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
+The supplied smoke configs run 80 updates; adjust the training duration for a
+full run. Use `wan21_14b_smoke_16ch.yaml` for RGB-only conditioning.
 
-### Inference
-
-For standard single-GPU inference with the public RGB/depth adapters, follow
-the [Wan checkpoint quickstart](docs/model_cards/wan.md#download-and-use).
-
-Optional LightX2V four-step inference (requires a separate acceleration LoRA):
-
-```bash
-torchrun --standalone --nproc_per_node=4 -m training.wan.inference \
-  --checkpoint_path <ckpt> --experiment_config <config.yaml> \
-  --base_model_path <Wan2.1-Fun-14B-InP> --dataset_file <shard.txt> \
-  --data_root <processed_root> --lightx2v_lora_path <lora.safetensors> \
-  --num_inference_steps 4 --guidance_scale 1.0 \
-  --lightx2v_compat_mode force_compat --lightx2v_compat_strict \
-  --height 480 --width 832 --output_dir outputs/<run>/
-```
-
-### Human demonstration → robot video
-
-The DexYCB application runs the full chain — hand retargeting, Panda IK, robot mesh + EEF
-depth rendering, conditioning assembly, and generation. See
-[`data_processing/dexycb/README_pipeline.md`](data_processing/dexycb/README_pipeline.md);
-robot base placement is an explicit user decision made in viser via
-`data_processing/dexycb/interactive_panda_base.py`.
-
-## Notes
-
-- `data/` can be a local dataset directory or a symlink; write run products under
-  `outputs/`, which is git-ignored.
-- Reference checkpoints by absolute path in an experiment config. Never write into a source
-  checkpoint directory.
-- `pipeline.type: wan2.1_fun_inp_hand_concat` is a stable registry identifier and is exempt
-  from the `robot_mesh_video_*` / `eef_depth_*` naming.
+For Cosmos3, see the [training guide](docs/cosmos3/training.md) for preencoding,
+LoRA training and resuming. The distributed training code is experimental.
 
 ## Acknowledgements
 
 We thank the contributors to [Wan](https://github.com/Wan-Video/Wan2.1),
+[NVIDIA Cosmos](https://github.com/nvidia/cosmos),
 [VideoX-Fun](https://github.com/aigc-apps/VideoX-Fun),
 [LightX2V](https://github.com/ModelTC/lightx2v),
 [robosuite](https://github.com/ARISE-Initiative/robosuite),
@@ -209,19 +181,19 @@ and the [DROID](https://droid-dataset.github.io/) and
 
 ## License
 
-Original RoFacto code is released under [Apache-2.0](LICENSE). Adapted components
-retain their upstream licenses and attribution; see [NOTICE](NOTICE) and
-[third-party notices](THIRD_PARTY_NOTICES.md). Model weights and separately
-downloaded datasets, robot assets and dependencies have their own licenses.
-Wan adapters use Apache-2.0; the Cosmos3-Super adapter uses OpenMDW-1.1.
+RoFacto code is released under [Apache-2.0](LICENSE). See
+[third-party notices](THIRD_PARTY_NOTICES.md) for adapted components.
+Checkpoints and external assets retain the licenses listed in their model cards.
 
 ## Citation
 
+If you find RoFacto useful in your research, please cite:
+
 ```bibtex
-@article{kim2026rofacto,
+@inproceedings{kim2026rofacto,
   title={Robot-Factored World Models via Robot Rendering},
   author={Kim, Byungjun and Kim, Taeksoo and Cha, Hyunsoo and Joo, Hanbyul},
-  journal={arXiv preprint arXiv:2607.22535},
+  booktitle={Conference on Robot Learning},
   year={2026}
 }
 ```

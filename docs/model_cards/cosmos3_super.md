@@ -74,3 +74,14 @@ Super equivalence against the original native recipe remain unverified.
 NVIDIA's Cosmos3 base and these adapter materials use OpenMDW-1.1. See `LICENSE`
 and `NOTICE`. No private human demonstrations or robot assets are included.
 `release_metadata.json` and `SHA256SUMS` identify the release.
+
+## Citation
+
+```bibtex
+@inproceedings{kim2026rofacto,
+  title={Robot-Factored World Models via Robot Rendering},
+  author={Kim, Byungjun and Kim, Taeksoo and Cha, Hyunsoo and Joo, Hanbyul},
+  booktitle={Conference on Robot Learning},
+  year={2026}
+}
+```
