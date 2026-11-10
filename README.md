@@ -2,7 +2,13 @@
 
 <h1>RoFacto: Robot-Factored World Models via Robot Rendering</h1>
 
-[Project page](https://bjkim95.github.io/rofacto/) · [Paper](https://arxiv.org/abs/2607.22535) · [Checkpoints](docs/checkpoints.md)
+<p>
+  <a href="https://bjkim95.github.io/rofacto/"><img src="https://img.shields.io/badge/Project_Page-2563EB?style=for-the-badge&amp;logo=homepage&amp;logoColor=white" alt="Project page" height="28"></a>
+  &nbsp;
+  <a href="https://arxiv.org/abs/2607.22535"><img src="https://img.shields.io/badge/arXiv-Paper-B31B1B?style=for-the-badge&amp;logo=arxiv&amp;logoColor=white" alt="Read the paper on arXiv" height="28"></a>
+  &nbsp;
+  <a href="docs/checkpoints.md"><img src="https://img.shields.io/badge/Hugging_Face-Checkpoints-FFD21E?style=for-the-badge&amp;logo=huggingface&amp;logoColor=FFD21E" alt="Hugging Face checkpoints" height="28"></a>
+</p>
 
 </div>
 
