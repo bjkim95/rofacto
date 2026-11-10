@@ -1,0 +1,122 @@
+experiment:
+  name: wan2.1_14b_fun_inp_nominal_mesh_scene_eef_depth_clips81_dwm_droid_dit4dit_robocasa_preencoded_h200
+  description: Wan2.1-Fun-14B-InP DWM LoRA on DROID render_v2 + RoboCasa DiT4DiT clip-start
+    rollouts 480x832 clips81, nominal mesh + scene depth + EEF depth (48ch), Qwen3-VL
+    general prompts, preencoded WAN latents
+  date: '2026-05-26'
+  author: Byungjun Kim
+  output_dir: outputs/
+pipeline:
+  type: wan2.1_fun_inp_hand_concat
+  base_model_name_or_path: /example/Wan2.1-Fun-V1.1-14B-InP
+  fps: 16
+transformer:
+  class: WanTransformer3DModelWithConcat
+  condition_channels: 48
+training:
+  mode: lora
+  resume_from_checkpoint: null
+  learning_rate: 0.0001
+  batch_size: 1
+  max_train_steps: 15000
+  gradient_accumulation_steps: 4
+  optimizer: adamw
+  weight_decay: 0.01
+  lr_scheduler: cosine_with_restarts
+  lr_warmup_steps: 100
+  lr_num_cycles: 1
+  max_grad_norm: 1.0
+  beta1: 0.9
+  beta2: 0.95
+  seed: 42
+  lora_rank: 64
+  lora_alpha: 64
+  trainable_parameter_patterns:
+  - patch_embedding
+  prompt_mode: normal
+  validation_prompt_mode: original
+  conditioning_mode: dwm
+  hand_dropout_prob: 0.0
+  text_dropout_prob: 0.1
+  eef_depth_dropout_prob: 0.1
+  custom_settings:
+    distributed_backend: deepspeed
+    mixed_precision: bf16
+    gradient_checkpointing: true
+    load_tensors: true
+    random_flip: false
+    max_num_frames: 81
+    enable_slicing: true
+    enable_tiling: true
+    allow_tf32: true
+    checkpointing_steps: 500
+    validation_num_inference_steps: 40
+    validation_guidance_scale: 5.0
+    validation_negative_prompt: Bright tones, overexposed, static, blurred details,
+      subtitles, style, works, paintings, images, static, overall gray, worst quality,
+      low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly
+      drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused
+      fingers, still picture, messy background, three legs, many people in the background,
+      walking backwards
+    run_initial_validation: false
+    keep_full_state_checkpoints: 1
+data:
+  dataset_file:
+  - dataset_files/droid_robocasa_dit4dit_clipstart_480x832_balanced24_task_success_balanced_split/train_videos_clips81_ready_preencoded.txt
+  validation_set:
+  - dataset_files/droid_render_v2_random_split/test_videos_clips81.txt
+  - dataset_files/robocasa_dit4dit_clipstart_480x832_balanced24_task_success_balanced_split/test_videos_clips81_no_prompt.txt
+  validation_sampling_mode: per_file
+  validation_missing_prompt_mode: empty
+  data_root: /example/data
+  fps: 16
+  height_buckets: 480
+  width_buckets: 832
+  frame_buckets: 81
+  max_num_frames: 81
+  clip_start_frame_stride: 12
+  dataloader_num_workers: 4
+  pin_memory: true
+  validation_prompt_separator: ':::'
+  max_validation_videos: 0
+  init_validation_steps: 500
+  validation_steps: 1000
+  random_validation: true
+  prompt_subdir: videos_clips81_prompts_qwen3vl
+  prompt_json_fields:
+  - general.text
+  eager_load_prompts: false
+  static_video_source_mode: directory
+  static_video_subdir: static_videos_clips81
+  hand_video_subdir: robot_mesh_videos_nominal_clips81
+  static_disparity_subdir: static_depth_videos_clips81
+  hand_disparity_subdir: robot_eef_nominal_depth_videos_clips81
+  video_latents_subdir: video_latents_clips81_480x832_wan
+  prompt_embeds_subdir: prompt_embeds_qwen3vl_general_wan
+  static_video_latents_subdir: static_video_latents_clips81_480x832_wan
+  hand_video_latents_subdir: robot_mesh_videos_nominal_clips81_latents_480x832_wan
+  static_disparity_latents_subdir: static_depth_videos_clips81_latents_480x832_wan
+  hand_disparity_latents_subdir: robot_eef_nominal_depth_videos_clips81_latents_480x832_wan
+  empty_prompt_embeds_path: data/empty_prompt_embeds_wan.pt
+logging:
+  report_to: wandb
+  tracker_name: wan2.1_14b_fun_inp_nominal_mesh_scene_eef_depth_clips81_dwm_droid_dit4dit_robocasa_preencoded_h200
+  project_name: world_model
+  entity_name: vclab_2024
+  log_steps: 10
+slurm:
+  job_name: wan21_14b_droid_dit4dit_robocasa_nominal_mesh_scene_eef_depth_preencoded_h200
+  nodes: 1
+  gpus: 8
+  partition: h100
+  output: out/260526/%j_wan2.1_14b_droid_dit4dit_robocasa_nominal_mesh_scene_eef_depth_preencoded_h200.out
+  error: out/260526/%j_wan2.1_14b_droid_dit4dit_robocasa_nominal_mesh_scene_eef_depth_preencoded_h200.err
+environment:
+  torch_logs: +dynamo,recompiles,graph_breaks
+  torchdynamo_verbose: 1
+  wandb_mode: online
+  torch_nccl_enable_monitoring: 0
+  tokenizers_parallelism: true
+  omp_num_threads: 16
+  pytorch_alloc_conf: expandable_segments:True
+  nccl_timeout: 1800

@@ -1,0 +1,22 @@
+# Exact RGB recipe; choose paths on the CLI. 8 GPUs => effective batch 32.
+model_variant: super
+cp: 1
+microbatch: 1
+accum: 4
+lora_rank: 64
+lora_alpha: 64
+lr: 0.0001
+text_dropout: 0.1
+activation_checkpointing: full
+stop_step: 5000
+schedule_steps: 15000
+warmup: 100
+seed: 42
+save_every: 100
+keep_checkpoints_every: 1000
+keep_checkpoint_steps: []
+eval_every: 500
+sample_steps: 12
+val_loss_samples_per_domain: 16
+val_loss_noise_draws: 2
+val_loss_seed: 1729

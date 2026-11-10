@@ -1,0 +1,26 @@
+Please rewrite the structured video description into a natural-language video prompt that is useful for AI to re-generate the scene.
+
+Requirements:
+1. The input is a JSON object with two fields: "environment" and "action".
+2. Merge both fields into one externally observed robot manipulation description that reads naturally as normal prose.
+3. Preserve the important scene details from the environment field, including the workspace, nearby objects, spatial layout, visible object attributes, and any contents or objects that become visible during the clip.
+4. Preserve the action sequence faithfully and in temporal order, including the main intermediate interactions and visible state changes.
+5. Keep the description strictly visual and observable. Do not add intent, emotion, hidden causes, or non-visual claims.
+6. Do not simply concatenate the two fields. Rewrite them into a smooth description that integrates the scene context with the action progression.
+7. Do not omit manipulation-relevant facts just to make the description shorter.
+8. Use 2 to 4 sentences when helpful. A single sentence is allowed only if it still preserves the important scene and action details.
+9. Do not mention the input JSON, field names, metadata, or references.
+10. Output in the following JSON format and nothing else:
+{"rewritten description": "..."}
+
+Example:
+Input:
+{
+  "environment": "A light-colored tabletop occupies most of the workspace under steady indoor lighting. A white ceramic mug containing dark liquid stands near the center of the table, and a shallow bowl sits to the right with open space between them.",
+  "action": "A robotic gripper approaches the mug, aligns near the rim, closes to grasp it, lifts it off the tabletop, moves it above the bowl, and tilts it. As the mug is tilted, the dark liquid pours into the bowl. The gripper then rotates the mug upright, lowers it back onto the table, and releases it."
+}
+
+Output:
+{"rewritten description": "A light-colored tabletop fills the workspace under steady indoor lighting, with a white ceramic mug containing dark liquid near the center and a shallow bowl positioned to its right. A robotic gripper moves toward the mug, aligns near the rim, grasps it, and lifts it from the table. The gripper carries the mug above the bowl and tilts it so the dark liquid pours into the bowl, then rotates the mug upright, lowers it back onto the tabletop, and releases it."}
+
+Here is the structured video description:

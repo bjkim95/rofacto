@@ -1,7 +1,43 @@
-_site/
-.jekyll-cache/
-.jekyll-metadata
-.sass-cache/
-.bundle/
-vendor/
+# Run products
+outputs/
+outputs_infer/
+__pycache__/
+*.pyc
+.pytest_cache/
 .DS_Store
+._*
+
+# Input-only symlink to the shared dataset root
+/data
+
+# ── Externally fetched assets (see fetch_assets.sh) ──────────────────────────
+# These are upstream artifacts redistributed by their owners, not by us. They
+# are downloaded on demand and pinned, so they stay out of version control.
+
+# DROID annotations — huggingface.co/KarlP/droid (~215 MB)
+/data_processing/droid/assets/intrinsics.json
+/data_processing/droid/assets/cam2base_extrinsics.json
+/data_processing/droid/assets/cam2base_extrinsic_superset.json
+/data_processing/droid/assets/camera_serials.json
+/data_processing/droid/assets/keep_ranges_1_0_1.json
+/data_processing/droid/assets/droid_language_annotations.json
+/data_processing/droid/assets/episode_id_to_path.json
+
+# Third-party code / meshes at pinned upstream commits (~49 MB)
+# robosuite (MIT), sam3 (SAM License), dex-urdf, dex-retargeting
+/data_processing/third_party/
+
+# Prebuilt wheel (cu128 / torch 2.9 / cp310); see README_ENV.md
+flash_attn-*.whl
+
+# Cosmos3 isolated runtime and local outputs
+.deps/
+.venv-cosmos3/
+
+# Local weights, credentials and developer state
+/models/
+.env
+.env.*
+!.env.example
+.codex/
+.ovis/

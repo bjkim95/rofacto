@@ -1,0 +1,38 @@
+# Documentation-grade dependency inventory derived from
+# outputs/verify-260711/probe/import_closure_external.json.
+# Observed probe versions: torch 2.9.0+cu128, diffusers 0.37.1,
+# safetensors 0.8.0-rc.0. Other entries are intentionally unpinned.
+
+Pillow  # import: PIL
+accelerate
+comfy  # provided by the selected ComfyUI runtime
+dataset
+decord
+diffusers==0.37.1
+einops
+h5py
+imageio
+numpy
+omegaconf
+opencv-python  # import: cv2
+pai_fuser
+pandas
+safetensors==0.8.0rc0
+sageattention
+sageattention_sm80
+sageattention_sm86
+sageattention_sm89
+sageattention_sm90
+sageattention_sm120
+scipy
+torch==2.9.0+cu128
+torchvision
+tqdm
+transformers
+PyYAML  # import: yaml
+
+# Dynamic or optional imports from the closure; install only for the feature used.
+# bitsandbytes
+# flash-attn  # imports: flash_attn, flash_attn_interface
+# videox_fun
+# wandb

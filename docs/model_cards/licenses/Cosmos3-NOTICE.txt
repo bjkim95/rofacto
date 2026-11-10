@@ -1,0 +1,14 @@
+RoFacto Cosmos3 adapters
+RoFacto contributors: Byungjun Kim, Taeksoo Kim, Hyunsoo Cha, Hanbyul Joo.
+
+Base model developer: NVIDIA.
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Cosmos3-Nano: https://huggingface.co/nvidia/Cosmos3-Nano
+Cosmos3-Super: https://huggingface.co/nvidia/Cosmos3-Super
+OpenMDW-1.1: https://openmdw.ai/license/1-1/
+
+Modifications: trained generator Q/K/V/output LoRA adapters for aligned static
+scene and robot-render conditioning. This package does not redistribute the
+full NVIDIA base model, VAE, robot assets or training data.
+The OpenMDW-1.1 license text is reproduced in LICENSE. These weights are a
+RoFacto research adaptation, not an official NVIDIA RoFacto model release.

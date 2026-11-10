@@ -1,0 +1,13 @@
+Please rewrite the video description to be useful for AI to re-generate the video, according to the following requirements:
+
+1. Do not start with phrases like "The video/scene/frame shows" or "In this video/scene/frame".
+2. Preserve a first-person, egocentric perspective. Treat the camera as the viewer’s eyes. Do not rewrite the viewer as "a person" or "someone".
+3. When any part of the viewer’s body is visible (hands, arms, legs, feet, torso, etc.), keep it naturally described as the viewer’s own (e.g., "my right hand", "my feet"). Do not overemphasize body parts if they are not central, but do not remove them if they are visible.
+4. Keep descriptions strictly visual and observable. Remove subjective or emotional interpretations (e.g., "peaceful", "comfortable") and remove meta statements or non-visual claims (e.g., "no visible detail to identify...").
+5. Include: (a) the environment (location, surfaces, objects, lighting), (b) the spatial layout relative to the viewer (e.g., "in front of me", "to my right", "near my feet"), and (c) observable actions over time with clear physical state changes (e.g., opened/closed, picked up/put down, moved/rotated).
+6. Preserve camera/view information only if explicitly present in the original description (e.g., head turns, viewpoint shifts, camera motion, shot style). Do not invent any camera movement, style, weather, or time.
+7. Keep the rewrite concise but complete: prioritize stable object attributes, spatial relations, and state changes over redundant wording.
+8. Output in the following JSON format (and only this JSON):
+{"rewritten description": "..."}
+
+Here is the video description:

@@ -1,0 +1,14 @@
+RoFacto: Robot-Factored World Models via Robot Rendering
+Copyright 2026 RoFacto contributors.
+
+This distribution adapts components from Wan2.1 / VACE, VideoX-Fun,
+Hugging Face Diffusers, CogVideo, RIFLEx, TeaCache, OpenAI CLIP, OpenCLIP,
+LoRA, lora-diffusion, kohya_ss, PRoPE / HY-WorldPlay's MIT-licensed PRoPE
+module, PyRoki, Franka Panda / example-robot-data, and robosuite.
+Original notices in the source files and licenses/ are retained.
+See THIRD_PARTY_NOTICES.md for component-level attribution.
+
+The RoFacto adaptations add robot-render/depth conditioning, data loading,
+training/inference integration, geometry preprocessing, and checkpoint tools.
+No base-model weights, private demonstrations or third-party robot mesh files
+are included. External dependencies and weights retain their own licenses.

@@ -1,0 +1,17 @@
+You will be given a sequence of frames sampled uniformly from a single short video clip of a robot manipulation scene captured by an externally mounted (third-person) camera.
+
+Your task: produce a SINGLE detailed natural-language description suitable as a training caption for a video generative model.
+
+Cover, in this order, in a flowing paragraph (no bullet points, no JSON):
+1. Camera viewpoint, framing, lighting (indoor/outdoor, color temperature, shadow quality).
+2. Static scene: workspace surface (material, color), background, surrounding furniture, and their relative spatial layout.
+3. Manipulable objects: identity, color, material, approximate size, and position relative to the workspace and to each other.
+4. Robot embodiment: visible parts (arm, gripper / hand type), color, posture at the start of the clip.
+5. Temporal action: describe the entire motion from first to last frame in temporal order, including approach, contact, grasp / release, transport, orientation changes, and any object state changes (pour, open, slide, tilt, etc.).
+6. Subtle visual cues that a video model must reproduce (specular highlights, deformation, contact shadow, occlusion by gripper, fabric / liquid behavior).
+
+Style:
+- Present tense.
+- Concrete and visual; no speculation about the operator's goal or intent.
+- 150 to 200 words.
+- One paragraph. No headings, no list markers, no JSON.

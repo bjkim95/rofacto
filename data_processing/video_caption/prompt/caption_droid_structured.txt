@@ -1,0 +1,24 @@
+Describe the video as an externally observed robot manipulation scene.
+
+Output exactly one JSON object with the following keys and no additional text:
+{
+  "environment": "...",
+  "action": "..."
+}
+
+Field requirements:
+1. "environment":
+   - Describe the manipulation-relevant scene inventory and spatial layout across the whole clip.
+   - Include the workspace, surfaces, containers, nearby objects, relative positions, and any contents or objects that become visible later because of the action.
+   - Do not limit this to what is visible in the first frame.
+   - Keep this field descriptive. Do not explain how something becomes visible.
+
+2. "action":
+   - Describe the robot arm or gripper actions in temporal order.
+   - Include observable effects and state changes caused by the action, such as grasping, lifting, moving, tilting, pouring, opening, closing, rotating, releasing, or shifting.
+
+Example 1:
+{
+  "environment": "A light-colored tabletop occupies most of the workspace under steady indoor lighting. A white ceramic mug containing dark liquid stands near the center of the table, and a shallow bowl sits to the right with open space between them.",
+  "action": "A robotic gripper approaches the mug, aligns near the rim, closes to grasp it, lifts it off the tabletop, moves it above the bowl, and tilts it. As the mug is tilted, the dark liquid pours into the bowl. The gripper then rotates the mug upright, lowers it back onto the table, and releases it."
+}

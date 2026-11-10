@@ -1,0 +1,28 @@
+pipeline:
+  class: "CogVideoXFunStaticToVideoJointGenerationPipeline"
+  transformer_class: "CogVideoXFunTransformer3DModelWithJointGeneration"
+  condition_channels: 16
+  num_output_videos: 2
+  expand_input_channels: true
+
+training_modes:
+  full:
+    description: "Full fine-tuning of all parameters"
+    supported: true
+    default: true
+    
+  lora:
+    description: "LoRA fine-tuning with projection layer"
+    supported: true
+    default: false
+    parameters:
+      lora_rank: 64
+      lora_alpha: 32
+      freeze_projection: false
+
+validation:
+  enabled: true
+  steps: 500
+  epochs: 1
+  max_videos: 4
+

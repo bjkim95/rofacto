@@ -1,0 +1,9 @@
+steps: 35
+guidance: 6.0
+shift: 10.0
+sigma_max: 80.0
+normalize_cfg: false
+has_negative_prompt: true
+use_batched_cfg: false
+seed: 42
+negative_prompt: 'Human skin, human hands, worn sleeves, extra arms, extra fingers, duplicate objects, disappearing objects, changing object colors, melting rigid boxes, rigid frozen cloth, changing robot design, flicker, camera movement, blurry details, inconsistent background, sudden jumps.'

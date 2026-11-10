@@ -1,0 +1,10 @@
+RoFacto Wan2.1-14B adapters
+RoFacto contributors: Byungjun Kim, Taeksoo Kim, Hyunsoo Cha, Hanbyul Joo.
+Based on Alibaba PAI Wan2.1-Fun-V1.1-14B-InP and Wan2.1.
+Upstream: https://huggingface.co/alibaba-pai/Wan2.1-Fun-V1.1-14B-InP
+License source revision: dda118c34ea14f2617b541a5e9bb696b7c653099
+
+Modifications: trained RoFacto LoRA adapters and extended patch embedding for
+static scene, nominal robot mesh and optional scene/EEF depth conditions.
+The full upstream base model is not redistributed in this package.
+See LICENSE for the Apache License, Version 2.0.

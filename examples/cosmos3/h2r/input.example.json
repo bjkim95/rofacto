@@ -1,0 +1,7 @@
+{
+  "id": "robot_transfer_01",
+  "static_image": "static.png",
+  "robot_mesh_video": "mesh.mp4",
+  "prompt_file": "prompt.example.json",
+  "fps": 15
+}

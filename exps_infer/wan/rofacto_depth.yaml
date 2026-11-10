@@ -1,0 +1,25 @@
+experiment:
+  name: rofacto_wan_depth
+  description: RoFacto Wan2.1-14B scene and EEF depth inference
+  output_dir: outputs/inference
+pipeline:
+  type: wan2.1_fun_inp_hand_concat
+  base_model_name_or_path: null  # Supply --base_model_path.
+  fps: 16
+transformer:
+  class: WanTransformer3DModelWithConcat
+  condition_channels: 48
+training:
+  mode: lora
+  conditioning_mode: dwm
+  lora_rank: 64
+  lora_alpha: 64
+  custom_settings:
+    enable_slicing: true
+    enable_tiling: true
+data:
+  height_buckets: 480
+  width_buckets: 832
+  frame_buckets: 81
+  max_num_frames: 81
+  fps: 16

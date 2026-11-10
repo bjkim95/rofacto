@@ -1,0 +1,9 @@
+steps: 12
+guidance: 1.0
+shift: 5.0
+sigma_max: 80.0
+normalize_cfg: false
+has_negative_prompt: false
+use_batched_cfg: false
+seed: 42
+negative_prompt: ''

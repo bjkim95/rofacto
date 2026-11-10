@@ -1,0 +1,133 @@
+# CogVideoX Static-to-Video Cross Pipeline with Pose Adapter
+# This pipeline combines CogVideoX's static-to-video capabilities with cross-attention
+# and pose conditioning for enhanced control over video generation.
+
+pipeline:
+  class: "CogVideoXStaticToVideoCrossPoseAdapterPipeline"
+  transformer_class: "CrossTransformer3DModelWithAdapter"
+  condition_channels: 16
+  cross_attn_interval: 2
+  cross_attn_dim_head: 128
+  cross_attn_num_heads: 16
+  cross_attn_kv_dim: null
+  is_train_cross: true
+  use_zero_proj: true
+
+training_modes:
+  full:
+    description: "Full fine-tuning of all parameters"
+    supported: true
+    default: true
+    
+  lora:
+    description: "LoRA fine-tuning with cross-attention adapters"
+    supported: true
+    default: false
+    parameters:
+      lora_rank: 64
+      lora_alpha: 32
+      # Learning rate scaling for non-LoRA parameters
+      non_lora_lr_scale: 1.0  # Scale factor for non-LoRA parameters (1.0 = same as LoRA)
+      # Examples:
+      # non_lora_lr_scale: 0.1  # Non-LoRA parameters use 10% of LoRA learning rate
+      # non_lora_lr_scale: 2.0  # Non-LoRA parameters use 2x LoRA learning rate
+      # non_lora_lr_scale: null  # Use same learning rate for all parameters
+      # Legacy parameters (deprecated, use trainable_parameter_patterns instead)
+      freeze_projection: false
+      freeze_cross_attention: false
+      # New flexible parameter control
+      trainable_parameter_patterns:
+        - "patch_embed.cond_proj.*"  # Condition projection layer
+        - "perceiver_cross_attention.*"  # Cross-attention layers
+        # Examples of other useful patterns:
+        # - "transformer\\.layers\\.[0-9]+\\.attn.*"  # Specific attention layers
+        # - "transformer\\.layers\\.[0-9]+\\.mlp.*"   # Specific MLP layers
+        # - ".*norm.*"  # All normalization layers
+        # - ".*embed.*"  # All embedding layers
+      frozen_parameter_patterns:
+        # - ".*\\.bias"  # Freeze all bias parameters
+        # Examples of other useful patterns:
+        # - "transformer\\.layers\\.[0-9]+\\.attn\\..*"  # Freeze all attention layers
+        # - ".*\\.weight"  # Freeze all weight parameters (keep only LoRA)
+        # - "transformer\\.layers\\.[0-9]+\\.mlp\\..*"   # Freeze all MLP layers
+
+validation:
+  enabled: true
+  steps: 500
+  epochs: 1
+  max_videos: 4
+
+# Cross-attention specific configurations
+cross_attention:
+  enabled: true
+  interval: 2
+  dim_head: 128
+  num_heads: 16
+  kv_dim: null  # Will be inferred from transformer config
+  dropout: 0.0
+  
+# Pipeline behavior
+pipeline_config:
+  use_ref_latents: true  # Use static_videos as ref_latents for cross-attention
+  use_control_latents: true  # Use hand_videos as control_latents
+  use_init_video: false  # Static-to-video pipeline doesn't use init_video
+
+# Parameter Pattern Examples
+parameter_pattern_examples:
+  description: "Examples of useful parameter patterns for flexible training control"
+  
+  # Common patterns for different training strategies:
+  minimal_training:
+    description: "Only train LoRA and essential layers"
+    trainable_patterns:
+      - "lora.*"
+      - "patch_embed.cond_proj.*"
+    frozen_patterns:
+      - ".*"
+  
+  cross_attention_training:
+    description: "Train LoRA + cross-attention layers"
+    trainable_patterns:
+      - "lora.*"
+      - "perceiver_cross_attention.*"
+      - "patch_embed.cond_proj.*"
+    frozen_patterns:
+      - ".*\\.bias"
+    non_lora_lr_scale: 0.5  # Cross-attention layers use 50% of LoRA learning rate
+  
+  selective_layer_training:
+    description: "Train specific transformer layers"
+    trainable_patterns:
+      - "lora.*"
+      - "transformer\\.layers\\.[0-9]+\\.attn.*"  # All attention layers
+      - "transformer\\.layers\\.[0-9]+\\.mlp.*"   # All MLP layers
+    frozen_patterns:
+      - ".*\\.bias"
+    non_lora_lr_scale: 0.2  # Transformer layers use 20% of LoRA learning rate
+  
+  full_adaptation:
+    description: "Train most parameters except biases"
+    trainable_patterns:
+      - "lora.*"
+      - ".*\\.weight"
+      - ".*norm.*"
+      - ".*embed.*"
+    frozen_patterns:
+      - ".*\\.bias"
+    non_lora_lr_scale: 0.1  # Non-LoRA parameters use 10% of LoRA learning rate
+
+# Adapter specific configurations
+adapter:
+  version: "v1"  # or "v2" for newer adapter version
+  norm: "group"  # Normalization type for adapter layers
+  groups: 32     # Number of groups for group normalization
+  freeze_hand_branch: false   # Whether to freeze hand pose branch
+  freeze_static_branch: false # Whether to freeze static scene branch
+
+# Static-to-video specific configurations
+static_to_video:
+  use_static_videos: true     # Use static scene videos as reference
+  use_hand_videos: true       # Use hand pose videos as control
+  static_video_channels: 16   # Number of channels for static video latents
+  hand_video_channels: 16     # Number of channels for hand video latents
+  total_condition_channels: 32 # Total condition channels (static + hand)

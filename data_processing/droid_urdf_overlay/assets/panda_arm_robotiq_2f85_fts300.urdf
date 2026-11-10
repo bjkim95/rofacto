@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="panda_robotiq_2f85">
+  <link name="panda_link0">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link0.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="panda_link1">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link1.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint1" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.333"/>
+    <parent link="panda_link0"/>
+    <child link="panda_link1"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="87" lower="-2.8973" upper="2.8973" velocity="2.1750"/>
+  </joint>
+  <link name="panda_link2">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link2.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint2" type="revolute">
+    <origin rpy="-1.57079632679 0 0" xyz="0 0 0"/>
+    <parent link="panda_link1"/>
+    <child link="panda_link2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="87" lower="-1.7628" upper="1.7628" velocity="2.1750"/>
+  </joint>
+  <link name="panda_link3">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link3.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint3" type="revolute">
+    <origin rpy="1.57079632679 0 0" xyz="0 -0.316 0"/>
+    <parent link="panda_link2"/>
+    <child link="panda_link3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="87" lower="-2.8973" upper="2.8973" velocity="2.1750"/>
+  </joint>
+  <link name="panda_link4">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link4.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint4" type="revolute">
+    <origin rpy="1.57079632679 0 0" xyz="0.0825 0 0"/>
+    <parent link="panda_link3"/>
+    <child link="panda_link4"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="87" lower="-3.0718" upper="-0.0698" velocity="2.1750"/>
+  </joint>
+  <link name="panda_link5">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link5.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint5" type="revolute">
+    <origin rpy="-1.57079632679 0 0" xyz="-0.0825 0.384 0"/>
+    <parent link="panda_link4"/>
+    <child link="panda_link5"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="12" lower="-2.8973" upper="2.8973" velocity="2.6100"/>
+  </joint>
+  <link name="panda_link6">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link6.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint6" type="revolute">
+    <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+    <parent link="panda_link5"/>
+    <child link="panda_link6"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="12" lower="-0.0175" upper="3.7525" velocity="2.6100"/>
+  </joint>
+  <link name="panda_link7">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/bullet_data/panda_description/meshes/visual/link7.dae"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="panda_joint7" type="revolute">
+    <origin rpy="1.57079632679 0 0" xyz="0.088 0 0"/>
+    <parent link="panda_link6"/>
+    <child link="panda_link7"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="12" lower="-2.8973" upper="2.8973" velocity="2.6100"/>
+  </joint>
+  <link name="panda_link8"/>
+  <joint name="panda_joint8" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.107"/>
+    <parent link="panda_link7"/>
+    <child link="panda_link8"/>
+  </joint>
+
+  <link name="droid_tool_adjust_link"/>
+  <joint name="droid_tool_adjust_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="panda_link8"/>
+    <child link="droid_tool_adjust_link"/>
+  </joint>
+
+  <link name="droid_fts300_base_link">
+    <visual>
+      <origin xyz="0.000189 -0.001689 0.026064" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper_v4/robotiq_fts300_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="droid_dark_shell">
+        <color rgba="0.18 0.18 0.18 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="droid_fts300_base_joint" type="fixed">
+    <origin xyz="0 0 -0.008" rpy="0 0 0"/>
+    <parent link="droid_tool_adjust_link"/>
+    <child link="droid_fts300_base_link"/>
+  </joint>
+
+  <link name="droid_fts300_sensor_link">
+    <visual>
+      <origin xyz="-0.000228 0.002701 0.01775" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper_v4/robotiq_fts300.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="droid_sensor_shell">
+        <color rgba="0.72 0.72 0.74 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="droid_fts300_sensor_joint" type="fixed">
+    <origin xyz="0 0 -0.016" rpy="0 0 0"/>
+    <parent link="droid_fts300_base_link"/>
+    <child link="droid_fts300_sensor_link"/>
+  </joint>
+
+  <link name="droid_fts300_top_link">
+    <visual>
+      <origin xyz="0.000186 -0.000012 0.010192" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper_v4/robotiq_fts300_top.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="droid_dark_shell">
+        <color rgba="0.18 0.18 0.18 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="droid_fts300_top_joint" type="fixed">
+    <origin xyz="0 0 -0.014" rpy="0 0 0"/>
+    <parent link="droid_fts300_sensor_link"/>
+    <child link="droid_fts300_top_link"/>
+  </joint>
+
+  <link name="droid_coupling_link">
+    <visual>
+      <origin xyz="-0.000308 -0.000018 -0.006964" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper_v4/robotiq_fts300_coupling.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="droid_dark_shell">
+        <color rgba="0.18 0.18 0.18 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="droid_coupling_joint" type="fixed">
+    <origin xyz="0 0 -0.011" rpy="0 0 0"/>
+    <parent link="droid_fts300_top_link"/>
+    <child link="droid_coupling_link"/>
+  </joint>
+
+  <link name="robotiq_base_link"/>
+  <joint name="robotiq_mount_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="droid_tool_adjust_link"/>
+    <child link="robotiq_base_link"/>
+  </joint>
+
+  <link name="robotiq_arg2f_base_link">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_base_link_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="robotiq_base_link_to_body" type="fixed">
+    <parent link="robotiq_base_link"/>
+    <child link="robotiq_arg2f_base_link"/>
+  </joint>
+
+  <link name="robotiq_left_outer_knuckle">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_outer_knuckle_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_shell">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_left_outer_finger">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_outer_finger_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_left_inner_knuckle">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_inner_knuckle_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_left_inner_finger">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_inner_finger_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_left_inner_finger_pad">
+    <visual>
+      <geometry>
+        <box size="0.022 0.00635 0.0375"/>
+      </geometry>
+      <material name="robotiq_pad">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="robotiq_finger_joint" type="revolute">
+    <origin xyz="0 -0.0306011 0.054904" rpy="0 0 3.14159265359"/>
+    <parent link="robotiq_arg2f_base_link"/>
+    <child link="robotiq_left_outer_knuckle"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="0.8" velocity="0.5" effort="1000"/>
+  </joint>
+  <joint name="robotiq_left_outer_finger_joint" type="fixed">
+    <origin xyz="0 0.0315 -0.0041" rpy="0 0 0"/>
+    <parent link="robotiq_left_outer_knuckle"/>
+    <child link="robotiq_left_outer_finger"/>
+  </joint>
+  <joint name="robotiq_left_inner_knuckle_joint" type="revolute">
+    <origin xyz="0 -0.0127 0.06142" rpy="0 0 3.14159265359"/>
+    <parent link="robotiq_arg2f_base_link"/>
+    <child link="robotiq_left_inner_knuckle"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="0.8757" velocity="0.5" effort="1000"/>
+    <mimic joint="robotiq_finger_joint" multiplier="1" offset="0"/>
+  </joint>
+  <joint name="robotiq_left_inner_finger_joint" type="revolute">
+    <origin xyz="0 0.0061 0.0471" rpy="0 0 0"/>
+    <parent link="robotiq_left_outer_finger"/>
+    <child link="robotiq_left_inner_finger"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.8757" upper="0" velocity="0.5" effort="1000"/>
+    <mimic joint="robotiq_finger_joint" multiplier="-1" offset="0"/>
+  </joint>
+  <joint name="robotiq_left_inner_finger_pad_joint" type="fixed">
+    <origin xyz="0 -0.0220203446692936 0.03242" rpy="0 0 0"/>
+    <parent link="robotiq_left_inner_finger"/>
+    <child link="robotiq_left_inner_finger_pad"/>
+  </joint>
+
+  <link name="robotiq_right_outer_knuckle">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_outer_knuckle_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_shell">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_right_outer_finger">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_outer_finger_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_right_inner_knuckle">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_inner_knuckle_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_right_inner_finger">
+    <visual>
+      <geometry>
+        <mesh filename="../../third_party/robosuite/robosuite/models/assets/grippers/meshes/robotiq_85_gripper/robotiq_arg2f_85_inner_finger_vis.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="robotiq_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="robotiq_right_inner_finger_pad">
+    <visual>
+      <geometry>
+        <box size="0.022 0.00635 0.0375"/>
+      </geometry>
+      <material name="robotiq_pad">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="robotiq_right_finger_joint" type="revolute">
+    <origin xyz="0 0.0306011 0.054904" rpy="0 0 0"/>
+    <parent link="robotiq_arg2f_base_link"/>
+    <child link="robotiq_right_outer_knuckle"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="0.81" velocity="0.5" effort="1000"/>
+    <mimic joint="robotiq_finger_joint" multiplier="1" offset="0"/>
+  </joint>
+  <joint name="robotiq_right_outer_finger_joint" type="fixed">
+    <origin xyz="0 0.0315 -0.0041" rpy="0 0 0"/>
+    <parent link="robotiq_right_outer_knuckle"/>
+    <child link="robotiq_right_outer_finger"/>
+  </joint>
+  <joint name="robotiq_right_inner_knuckle_joint" type="revolute">
+    <origin xyz="0 0.0127 0.06142" rpy="0 0 0"/>
+    <parent link="robotiq_arg2f_base_link"/>
+    <child link="robotiq_right_inner_knuckle"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="0.8757" velocity="0.5" effort="1000"/>
+    <mimic joint="robotiq_finger_joint" multiplier="1" offset="0"/>
+  </joint>
+  <joint name="robotiq_right_inner_finger_joint" type="revolute">
+    <origin xyz="0 0.0061 0.0471" rpy="0 0 0"/>
+    <parent link="robotiq_right_outer_finger"/>
+    <child link="robotiq_right_inner_finger"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.8757" upper="0" velocity="0.5" effort="1000"/>
+    <mimic joint="robotiq_finger_joint" multiplier="-1" offset="0"/>
+  </joint>
+  <joint name="robotiq_right_inner_finger_pad_joint" type="fixed">
+    <origin xyz="0 -0.0220203446692936 0.03242" rpy="0 0 0"/>
+    <parent link="robotiq_right_inner_finger"/>
+    <child link="robotiq_right_inner_finger_pad"/>
+  </joint>
+</robot>

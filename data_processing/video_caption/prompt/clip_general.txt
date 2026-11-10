@@ -1,0 +1,17 @@
+You will be given a sequence of frames sampled uniformly from a single short video clip of a robot manipulation scene captured by an externally mounted (third-person) camera.
+
+Your task: produce a SINGLE natural-language description that gives a *rich scene context* but only a *generic* mention of robot manipulation (no specific action, no target object, no grasp / lift / place / pour-style verbs, no goal or intent).
+
+Cover, in this order, in a flowing paragraph (no bullet points, no JSON):
+1. Camera viewpoint, framing, lighting (indoor/outdoor, color temperature, shadow quality).
+2. Static scene: workspace surface (material, color), background, surrounding furniture, and their relative spatial layout.
+3. Objects on / around the workspace: identity, color, material, approximate size, and position. Describe them as part of the scene only — do NOT name a single "target" or describe what happens to any of them.
+4. Robot embodiment: visible parts (arm, gripper / hand type), color, posture, and where it is positioned in the frame.
+5. End the paragraph with ONE generic sentence about the robot's presence and activity — examples: "A robotic arm extends over the workspace and interacts with objects on the bench.", "The robotic manipulator engages with items on the surface.", "A robot arm operates within the scene." Do NOT name any object the robot touches and do NOT describe any specific motion verb (no grasp / pick / lift / place / pour / open / push / pull / slide / rotate / release).
+
+Style:
+- Present tense.
+- Concrete and visual.
+- 120 to 180 words.
+- One paragraph. No headings, no list markers, no JSON.
+- The scene description must match the level of detail of a video-generation training caption, but the action description must remain action-agnostic.

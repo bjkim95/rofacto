@@ -1,0 +1,16 @@
+You will be given a sequence of frames sampled uniformly from a single short video clip of a robot manipulation scene captured by an externally mounted (third-person) camera. Treat the frames as a static snapshot of the scene — do NOT describe any robot motion, action, or interaction.
+
+Your task: produce a SINGLE natural-language description of the scene as it appears, with rich detail about objects and their physical properties.
+
+Cover, in this order, in a flowing paragraph (no bullet points, no JSON):
+1. Camera viewpoint, framing, lighting (indoor/outdoor, color temperature, shadow quality).
+2. Static scene: workspace surface (material, color, texture), background elements, surrounding furniture, and their relative spatial layout.
+3. Objects on or around the workspace: for each object, state its identity, color, material, rigidity class (rigid / deformable / liquid / granular), approximate size, and position relative to the workspace and to other objects. For any object in close proximity to the robot's gripper or end-effector, provide extra detail: exact color shade, surface texture, estimated dimensions, and any distinguishing features (labels, logos, markings, transparency). Describe object properties only — do NOT state or imply what the robot will do with any object.
+4. Robot embodiment: explicitly classify the visible embodiment before describing it. State whether it appears as a fixed robot arm, dual-arm setup, humanoid robot, floating hand, gripper-only end effector, dexterous hand, or another visible embodiment. State the visible end-effector type when possible, such as a parallel gripper, suction cup, simple claw, dexterous hand, or humanoid hand. Then describe visible parts, color scheme, current resting posture, and position within the frame. Only describe what is visible; do not infer a humanoid body from isolated arms or grippers. Do NOT describe where the robot is moving or reaching toward.
+
+Style:
+- Present tense.
+- Concrete and visual; no verbs implying motion or intent (no reach / extend toward / approach / interact / operate / grasp / hold / touch).
+- Do NOT describe objects or the robot as stationary, still, motionless, or not moving — omit all such characterizations.
+- 130 to 170 words.
+- One paragraph. No headings, no list markers, no JSON.

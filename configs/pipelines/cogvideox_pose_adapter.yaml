@@ -1,0 +1,33 @@
+pipeline:
+  class: "CogVideoXPoseAdapterPipeline"
+  transformer_class: "CogVideoXTransformer3DModelWithAdapter"
+  
+adapter:
+  norm: "group"
+  groups: 32
+  freeze_hand_branch: false
+  freeze_static_branch: false
+  dropout_p: 0.0
+  shared: false
+
+training_modes:
+  full:
+    description: "Full fine-tuning with adapter"
+    supported: true
+    default: true
+    
+  lora:
+    description: "LoRA fine-tuning with adapter"
+    supported: true
+    default: false
+    parameters:
+      lora_rank: 64
+      lora_alpha: 32
+
+validation:
+  enabled: true
+  steps: 500
+  epochs: 1
+  max_videos: 4
+
+

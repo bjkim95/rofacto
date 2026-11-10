@@ -1,0 +1,9 @@
+# Runtime source pins. Transitive dependencies are locked by this upstream uv.lock.
+framework_url=https://github.com/NVIDIA/cosmos-framework.git
+framework_revision=96303bb0bdd14d9efa18f24d8ef98c7a0bfb8412
+framework_lock_sha256=9e62f878f5a8d14651ef5c7e044e7e8e25c6e2b4abbeb94035e042559fc7fd4b
+python_version=3.13.9
+dependency_group=cu128-train
+# The native distributed trainer imports these in addition to the upstream group.
+torchdata_version=0.11.0
+torchtitan_version=0.2.2

@@ -1,0 +1,84 @@
+pipeline:
+  class: "CogVideoXFunStaticToVideoPipeline"
+  transformer_class: "CogVideoXFunTransformer3DModelWithConcat"
+  # Condition channels: mask(1) + visual(16) + camera(24) + hand(32 or 16)
+  # Split hands: 1 + 16 + 24 + 32 = 73
+  # Regular hands: 1 + 16 + 24 + 16 = 57
+  # This will be automatically calculated based on data.split_hands
+  condition_channels: null  # Auto-calculated: 73 (split) or 57 (regular)
+
+training_modes:
+  full:
+    description: "Full fine-tuning of all parameters"
+    supported: true
+    default: true
+    
+  lora:
+    description: "LoRA fine-tuning with projection layer"
+    supported: true
+    default: false
+    parameters:
+      lora_rank: 64
+      lora_alpha: 32
+      freeze_projection: false
+
+# Training parameters specific to raymap + pose concat
+training_params:
+  p_prediction: 0.5  # Probability of using prediction mode (image + zero padding) vs static-to-video mode (full static)
+
+# Data requirements
+data_requirements:
+  required:
+    - videos
+    - video_latents
+    - prompts
+    - prompt_embeds
+    - images              # For prediction mode (first frame)
+    - image_latents       # For prediction mode
+    - static_videos       # For static-to-video mode
+    - static_video_latents
+    - hand_videos_gray_left
+    - hand_video_gray_left_latents
+    - hand_videos_gray_right
+    - hand_video_gray_right_latents
+    - raymaps             # Camera condition (6 channels)
+  optional:
+    - images_goal         # For future planning mode
+    - image_goal_latents
+    - raymaps_abs         # Absolute raymaps (for future use)
+
+validation:
+  enabled: true
+  steps: 500
+  epochs: 1
+  max_videos: 4
+
+description: |
+  CogVideoX-Fun Static-to-Video with Raymap + Hand Pose Concat Pipeline
+  
+  This pipeline combines:
+  - Visual condition: Image (prediction mode) or Static video (static-to-video mode)
+  - Camera condition: Raymap with temporal compression (Aether-style)
+  - Hand pose condition: Split hands (left + right) or regular hands
+  
+  Input channels breakdown:
+  - Noisy input: 16 channels (VAE latent)
+  - Mask: 1 channel (first frame for prediction, all frames for static)
+  - Visual: 16 channels (image+zero padding OR static video latents)
+  - Camera: 24 channels (raymap: 6 channels × 4 temporal compression)
+  - Hand: 32 channels (split: left 16 + right 16) OR 16 channels (regular)
+  
+  Total: 89 channels (split hands) or 73 channels (regular hands)
+  
+  Training modes:
+  - Prediction mode (p=0.5): Uses first frame image with zero padding
+    → Mask has 1 only at first frame
+  - Static-to-video mode (p=0.5): Uses full static video
+    → Mask has 1 at all frames
+
+
+
+
+
+
+

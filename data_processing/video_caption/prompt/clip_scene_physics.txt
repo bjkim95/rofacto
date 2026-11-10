@@ -1,0 +1,25 @@
+You will be given a sequence of frames sampled uniformly from a short video clip of a robot manipulation scene captured by an externally mounted camera.
+
+Use the entire sequence to understand the scene. Some objects may be partially occluded or only become identifiable in later frames. Describe the static scene context, visible objects, and visible robot embodiment, but do NOT describe the robot's temporal action sequence, task intent, success, failure, or future goal.
+
+Write one detailed natural-language paragraph suitable as a training caption for a video generative model.
+
+Cover, in this order:
+1. Camera viewpoint, framing, and lighting across the clip.
+2. Workspace surface: material, color, texture, visible boundaries, and surrounding background.
+3. Manipulable objects visible at any point in the clip: identity, approximate size, color, material, physical behavior class, distinctive details, and spatial layout relative to the workspace and to other objects. Explicitly state whether each object appears rigid, deformable or flexible, cloth-like, paper-like, rubbery, liquid, granular, transparent, reflective, hollow, or container-like when this can be inferred visually. Mention shape, surface texture, openings, lids, labels, contents, wrinkles, folds, dents, and other cues that affect how the object should keep or change shape in a generated video. If the visual evidence is unclear, use cautious wording such as "appears rigid" or "looks like flexible plastic" rather than inventing a property.
+4. Robot embodiment: classify the visible robot form, such as fixed robot arm, dual-arm setup, gripper-only end effector, dexterous hand, or other embodiment. Describe visible parts, color scheme, end-effector type, approximate scale, and where it appears in the frame.
+5. Static visual cues useful for generation: transparency, specular highlights, reflections, liquid or granular contents, deformation cues, shadows, occlusions, clutter, and contact relationships.
+
+Action handling:
+- Do NOT describe the sequence of robot actions over time.
+- Do NOT use verbs such as reaches, approaches, grasps, lifts, moves, places, releases, pushes, pulls, rotates, inserts, opens, closes, pours, wipes, or interacts.
+- Do NOT infer goals, instructions, success, failure, or future intent.
+- You may mention stable spatial relations visible in the clip, such as an object beside the gripper or a robot arm occupying the left side of the frame.
+
+Style:
+- Present tense.
+- Concrete, visual, and objective.
+- 150 to 210 words.
+- One paragraph.
+- No headings, bullet points, or JSON.

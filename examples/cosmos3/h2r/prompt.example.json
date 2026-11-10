@@ -1,0 +1,6 @@
+{
+  "scene": "A fixed camera views a workbench with a cardboard box and a folded blue cloth. The lighting is steady and the background remains stationary.",
+  "robot": "A dual-arm robot follows the rendered motion. Its appearance remains consistent throughout the video.",
+  "action": "The robot grasps the folded blue cloth, lifts it from the workbench, moves it over the box, and lowers it into the box. The cloth remains blue and deforms softly as it is handled.",
+  "camera": "Static camera, continuous shot, no cuts."
+}

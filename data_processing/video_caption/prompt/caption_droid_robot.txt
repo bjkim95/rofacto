@@ -1,0 +1,20 @@
+Describe the video as an externally observed robot manipulation scene.
+
+Treat the video as showing a robot arm and gripper interacting with objects in a workspace. Do not use first-person language. Do not describe the robot as a person or as the viewer.
+
+Include:
+(a) the visible environment that matters for the manipulation, such as the workspace, tabletop or other surfaces, containers, nearby objects, and lighting,
+(b) the spatial layout and relative positions of the robot arm, gripper, and important objects,
+(c) observable actions over time with clear physical state changes, such as approaching, grasping, lifting, moving, rotating, aligning, inserting, opening, closing, or releasing.
+
+Environment description is important, but prioritize details that help explain the interaction. Mention broader scene context briefly unless it directly affects the manipulation.
+
+Keep the description strictly visual and objective. If a task hint or reference is provided, use it only to clarify visible actions. Do not invent unseen actions, intent, success, failure, or hidden objects. Do not mention references, annotations, or metadata.
+
+Output a plain descriptive prompt only. No JSON, no markdown, and no bullet list.
+
+Example 1:
+A robot arm with a two-finger gripper moves over a light-colored tabletop where a white mug sits near the center and a small plastic container rests to the right. The gripper approaches the mug from above, closes around the handle area, and lifts it slightly off the table. The arm carries the mug a short distance across the surface and lowers it beside the container before releasing it, leaving the mug upright in a new position.
+
+Example 2:
+A robot arm operates above a work surface with a small cardboard box near the middle and several scattered objects around it. The gripper reaches toward the top flap of the box, makes contact, and pulls upward, causing the flap to open. The arm shifts the box slightly across the table and adjusts its orientation, leaving the container partially open and angled differently relative to the surrounding objects.

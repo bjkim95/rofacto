@@ -1,0 +1,34 @@
+pipeline:
+  type: "wan2.1_fun_inp_hand_concat_i2v_diffusers"
+  class: "WanFunInpaintHandConcatPipeline"
+  # Can be overridden by experiment YAML.
+  base_model_name_or_path: "models/Wan2.1-Fun-1.3B-InP-Diffusers"
+
+transformer:
+  class: "WanTransformer3DModelWithConcat"
+  condition_channels: 16
+
+transformer_additional_kwargs:
+  transformer_subpath: transformer
+
+vae_kwargs:
+  vae_subpath: vae
+  temporal_compression_ratio: 4
+  spatial_compression_ratio: 8
+
+text_encoder_kwargs:
+  text_encoder_subpath: text_encoder
+  tokenizer_subpath: tokenizer
+
+scheduler_kwargs:
+  scheduler_subpath: null
+  num_train_timesteps: 1000
+  shift: 5.0
+  use_dynamic_shifting: false
+  base_shift: 0.5
+  max_shift: 1.15
+  base_image_seq_len: 256
+  max_image_seq_len: 4096
+
+image_encoder_kwargs:
+  image_encoder_subpath: image_encoder

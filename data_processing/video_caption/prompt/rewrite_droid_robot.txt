@@ -1,0 +1,13 @@
+Please rewrite the video description to be useful for AI to re-generate the video, according to the following requirements:
+
+1. Do not start with phrases like "The video/scene/frame shows" or "In this video/scene/frame".
+2. Preserve an externally observed robot manipulation perspective. Do not rewrite the robot or camera as "I", "my", "the viewer", or "someone".
+3. When the robot arm or gripper is visible, describe it naturally as a robot arm, robotic gripper, or end effector. Do not anthropomorphize it as a person or a human hand.
+4. Keep descriptions strictly visual and observable. Remove subjective or emotional interpretations and remove meta statements or non-visual claims.
+5. Include: (a) the environment relevant to the manipulation, such as the workspace, surfaces, containers, nearby objects, and lighting, (b) the spatial layout and relative positions of the robot arm, gripper, and important objects, and (c) observable actions over time with clear physical state changes, such as grasped/released, opened/closed, moved/rotated, aligned/misaligned, lifted/lowered, or inserted/removed.
+6. Preserve camera or viewpoint information only if it is explicitly present in the original description. Do not invent camera movement, shot style, weather, or time.
+7. Keep the rewrite concise but complete: prioritize stable object attributes, spatial relations, interaction-relevant environment details, and state changes over redundant wording.
+8. Output in the following JSON format (and only this JSON):
+{"rewritten description": "..."}
+
+Here is the video description:
